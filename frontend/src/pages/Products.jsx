@@ -31,17 +31,17 @@ export default function Products() {
   });
 
   return (
-    <div className="bg-apple-gray min-h-full">
-      <div className="max-w-content mx-auto px-4 py-10" data-testid="page-products">
+    <div className="bg-apple-gray min-h-full w-full">
+      <div className="layout-container py-10" data-testid="page-products">
         <h1 className="font-display text-section-heading font-semibold text-ink-950 mb-2 leading-[1.1]" data-testid="products-title">
           All products
         </h1>
-        <p className="text-apple-textSecondary mb-8 max-w-2xl leading-[1.47] tracking-[-0.0234em]">
+        <p className="text-apple-textSecondary mb-8 max-w-2xl xl:max-w-4xl leading-[1.47] tracking-[-0.0234em]">
           Browse moss, aquascaping stone, and maintenance supplies. Filter by category or Green Index (eco score) for
           sustainably sourced picks.
         </p>
-        <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8 sm:items-start">
-          <div className="flex-1 min-w-[200px] flex flex-col">
+        <div className="flex flex-col lg:flex-row flex-wrap gap-4 mb-8 lg:items-end">
+          <div className="flex-1 min-w-[min(100%,12rem)] lg:min-w-[200px] flex flex-col">
             <label htmlFor="product-search" className="block text-micro text-apple-textTertiary mb-1 tracking-[-0.12px]">
               Search
             </label>
@@ -96,7 +96,10 @@ export default function Products() {
             Loading…
           </p>
         )}
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7" data-testid="products-grid">
+        <ul
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-7 xl:gap-8"
+          data-testid="products-grid"
+        >
           {products?.map((p) => (
             <li key={p.id} className="min-h-0">
               <ProductCard

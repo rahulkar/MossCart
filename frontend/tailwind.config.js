@@ -31,7 +31,8 @@ export default {
         "tile-heading": ["1.75rem", { lineHeight: "1.14", letterSpacing: "0.01225rem", fontWeight: "400" }],
       },
       maxWidth: {
-        content: "980px",
+        /** Legacy alias; prefer .layout-container for fluid full-width layout */
+        content: "min(100rem, 100% - 2rem)",
       },
       boxShadow: {
         "apple-card": "3px 5px 30px 0 rgba(0, 0, 0, 0.22)",

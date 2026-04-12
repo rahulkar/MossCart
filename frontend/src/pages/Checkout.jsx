@@ -51,8 +51,8 @@ export default function Checkout() {
 
   if (!user) {
     return (
-      <div className="bg-apple-gray min-h-full">
-        <div className="max-w-content mx-auto px-4 py-16 text-center" data-testid="page-checkout-guest">
+      <div className="bg-apple-gray min-h-full w-full">
+        <div className="layout-container py-16 text-center" data-testid="page-checkout-guest">
           <Link to="/login" className="text-apple-link font-semibold hover:underline">
             Log in
           </Link>{" "}
@@ -72,8 +72,8 @@ export default function Checkout() {
   };
 
   return (
-    <div className="bg-apple-gray min-h-full">
-      <div className="max-w-content mx-auto px-4 py-10" data-testid="page-checkout">
+    <div className="bg-apple-gray min-h-full w-full">
+      <div className="layout-container py-10" data-testid="page-checkout">
         <h1 className="font-display text-section-heading font-semibold text-ink-950 mb-2 leading-[1.1]" data-testid="checkout-title">
           Checkout
         </h1>
@@ -88,7 +88,7 @@ export default function Checkout() {
           </p>
         )}
         {items?.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-10">
+          <div className="grid md:grid-cols-2 gap-10 xl:gap-14 items-start">
             <form onSubmit={submit} className="space-y-4" data-testid="checkout-form">
               <div>
                 <label htmlFor="shippingName" className="block text-caption font-semibold text-ink-950 mb-1 tracking-[-0.224px]">

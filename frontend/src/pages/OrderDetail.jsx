@@ -16,8 +16,8 @@ export default function OrderDetail() {
 
   if (!user) {
     return (
-      <div className="bg-apple-gray min-h-full">
-        <div className="max-w-content mx-auto px-4 py-16 text-center" data-testid="page-order-guest">
+      <div className="bg-apple-gray min-h-full w-full">
+        <div className="layout-container py-16 text-center" data-testid="page-order-guest">
           <Link to="/login" className="text-apple-link font-semibold hover:underline" data-testid="order-login-link">
             Log in
           </Link>{" "}
@@ -29,7 +29,7 @@ export default function OrderDetail() {
 
   if (isLoading) {
     return (
-      <div className="max-w-content mx-auto px-4 py-16 text-apple-textSecondary" data-testid="order-detail-loading">
+      <div className="layout-container py-16 text-apple-textSecondary" data-testid="order-detail-loading">
         Loading order…
       </div>
     );
@@ -37,7 +37,7 @@ export default function OrderDetail() {
 
   if (error || !order) {
     return (
-      <div className="max-w-content mx-auto px-4 py-16" data-testid="order-detail-not-found">
+      <div className="layout-container py-16" data-testid="order-detail-not-found">
         <p className="text-ink-950">Order not found.</p>
         <Link to="/profile" className="text-apple-link mt-4 inline-block hover:underline" data-testid="order-back-profile">
           Back to profile
@@ -47,8 +47,8 @@ export default function OrderDetail() {
   }
 
   return (
-    <div className="bg-apple-gray min-h-full">
-      <div className="max-w-content mx-auto px-4 py-10" data-testid="page-order-detail">
+    <div className="bg-apple-gray min-h-full w-full">
+      <div className="layout-container py-10" data-testid="page-order-detail">
         <Link
           to="/profile"
           className="text-caption text-apple-link hover:underline mb-6 inline-block tracking-[-0.224px]"

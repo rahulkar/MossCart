@@ -26,8 +26,9 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-apple-gray min-h-full">
-      <div className="max-w-md mx-auto px-4 py-16" data-testid="page-login">
+    <div className="bg-apple-gray min-h-full w-full">
+      <div className="layout-container py-16 flex flex-col items-stretch sm:items-center">
+        <div className="w-full max-w-md sm:mx-auto" data-testid="page-login">
         <h1 className="font-display text-section-heading font-semibold text-ink-950 mb-2 leading-[1.1]" data-testid="login-title">
           Log in
         </h1>
@@ -81,6 +82,7 @@ export default function Login() {
             Log in
           </button>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -33,8 +33,8 @@ export default function Cart() {
 
   if (!user) {
     return (
-      <div className="bg-apple-gray min-h-full">
-        <div className="max-w-content mx-auto px-4 py-16 text-center" data-testid="page-cart-guest">
+      <div className="bg-apple-gray min-h-full w-full">
+        <div className="layout-container py-16 text-center" data-testid="page-cart-guest">
           <p className="text-apple-textSecondary">Sign in to view your cart.</p>
           <Link to="/login" className="text-apple-link font-semibold mt-4 inline-block hover:underline" data-testid="cart-login-link">
             Log in
@@ -48,8 +48,8 @@ export default function Cart() {
     items?.reduce((sum, line) => sum + line.product.priceCents * line.quantity, 0) ?? 0;
 
   return (
-    <div className="bg-apple-gray min-h-full">
-      <div className="max-w-content mx-auto px-4 py-10" data-testid="page-cart">
+    <div className="bg-apple-gray min-h-full w-full">
+      <div className="layout-container py-10" data-testid="page-cart">
         <h1 className="font-display text-section-heading font-semibold text-ink-950 mb-8 leading-[1.1]" data-testid="cart-title">
           Your cart
         </h1>

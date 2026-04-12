@@ -11,20 +11,23 @@ export default function Layout() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex flex-col bg-apple-gray" data-testid="layout-root">
+    <div className="min-h-screen min-h-[100dvh] flex flex-col bg-apple-gray w-full" data-testid="layout-root">
       <header
         className="sticky top-0 z-40 h-12 border-b border-white/10 bg-black/80 backdrop-blur-[20px] backdrop-saturate-[180%]"
         style={{ WebkitBackdropFilter: "saturate(180%) blur(20px)" }}
       >
-        <div className="max-w-content mx-auto px-4 h-full flex items-center justify-between gap-4">
+        <div className="layout-container h-full flex items-center justify-between gap-3 sm:gap-4 min-w-0">
           <Link
             to="/"
-            className="text-[17px] font-semibold text-white tracking-[-0.022em] leading-none"
+            className="text-[17px] font-semibold text-white tracking-[-0.022em] leading-none shrink-0"
             data-testid="nav-logo"
           >
             MossCart
           </Link>
-          <nav className="flex items-center gap-5 md:gap-6 flex-wrap justify-end" data-testid="nav-main">
+          <nav
+            className="flex items-center gap-4 sm:gap-5 md:gap-6 flex-wrap justify-end min-w-0 overflow-x-auto pb-0.5 [-webkit-overflow-scrolling:touch]"
+            data-testid="nav-main"
+          >
             <NavLink to="/" end className={navClass} data-testid="nav-home">
               Home
             </NavLink>
@@ -65,11 +68,11 @@ export default function Layout() {
           </nav>
         </div>
       </header>
-      <main className="flex-1">
+      <main className="flex-1 w-full min-w-0">
         <Outlet />
       </main>
       <footer className="bg-apple-gray py-10 mt-auto">
-        <div className="max-w-content mx-auto px-4 text-center text-micro text-apple-textTertiary" data-testid="footer">
+        <div className="layout-container text-center text-micro text-apple-textTertiary" data-testid="footer">
           MossCart — aquascaping moss, hardscape stone, and tank supplies. Local demo; mock payments only.
         </div>
       </footer>

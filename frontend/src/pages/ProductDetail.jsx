@@ -52,14 +52,14 @@ export default function ProductDetail() {
 
   if (isLoading) {
     return (
-      <div className="max-w-content mx-auto px-4 py-16 text-apple-textSecondary" data-testid="product-detail-loading">
+      <div className="layout-container py-16 text-apple-textSecondary" data-testid="product-detail-loading">
         Loading…
       </div>
     );
   }
   if (error || !product) {
     return (
-      <div className="max-w-content mx-auto px-4 py-16" data-testid="product-detail-not-found">
+      <div className="layout-container py-16" data-testid="product-detail-not-found">
         <p className="text-ink-950">Product not found.</p>
         <Link to="/products" className="text-apple-link mt-4 inline-block hover:underline">
           Back to products
@@ -73,8 +73,8 @@ export default function ProductDetail() {
   const stock = stockMeta(product.stock);
 
   return (
-    <div className="bg-apple-gray min-h-full">
-      <div className="max-w-content mx-auto px-4 py-10" data-testid="page-product-detail">
+    <div className="bg-apple-gray min-h-full w-full">
+      <div className="layout-container py-10" data-testid="page-product-detail">
         <Link
           to="/products"
           className="text-caption text-apple-link hover:underline mb-6 inline-block tracking-[-0.224px]"
@@ -82,7 +82,7 @@ export default function ProductDetail() {
         >
           ← All products
         </Link>
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-start">
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-14 xl:gap-16 items-start">
           <div
             className="rounded-lg overflow-hidden bg-apple-gray aspect-square shadow-apple-card"
             data-testid="product-image-wrap"

@@ -42,8 +42,8 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="bg-apple-gray min-h-full">
-        <div className="max-w-content mx-auto px-4 py-16 text-center" data-testid="page-profile-guest">
+      <div className="bg-apple-gray min-h-full w-full">
+        <div className="layout-container py-16 text-center" data-testid="page-profile-guest">
           <Link to="/login" className="text-apple-link font-semibold hover:underline">
             Log in
           </Link>{" "}
@@ -65,8 +65,8 @@ export default function Profile() {
   };
 
   return (
-    <div className="bg-apple-gray min-h-full">
-      <div className="max-w-content mx-auto px-4 py-10" data-testid="page-profile">
+    <div className="bg-apple-gray min-h-full w-full">
+      <div className="layout-container py-10" data-testid="page-profile">
         <h1 className="font-display text-section-heading font-semibold text-ink-950 mb-8 leading-[1.1]" data-testid="profile-title">
           Profile
         </h1>

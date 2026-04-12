@@ -11,9 +11,9 @@ export default function Home() {
   });
 
   return (
-    <div data-testid="page-home">
+    <div className="w-full min-w-0" data-testid="page-home">
       <section className="bg-apple-black text-white" data-testid="home-hero-section">
-        <div className="max-w-content mx-auto px-4 sm:px-6 py-20 md:py-28 md:min-h-[70vh] flex flex-col justify-center">
+        <div className="layout-container py-20 md:py-28 md:min-h-[70vh] flex flex-col justify-center">
           <p
             className="text-caption text-white/80 font-normal tracking-[-0.224px] mb-3"
             data-testid="home-eyebrow"
@@ -21,13 +21,13 @@ export default function Home() {
             Planted tank focus
           </p>
           <h1
-            className="font-display text-[2rem] sm:text-[2.5rem] md:text-display-hero font-semibold max-w-2xl text-balance text-white tracking-[-0.28px] leading-[1.07] md:leading-[1.07]"
+            className="font-display text-[2rem] sm:text-[2.5rem] md:text-display-hero font-semibold max-w-2xl xl:max-w-4xl 2xl:max-w-5xl text-balance text-white tracking-[-0.28px] leading-[1.07] md:leading-[1.07]"
             data-testid="home-hero-title"
           >
             Moss, stone, and supplies for aquascapes.
           </h1>
           <p
-            className="mt-5 text-[1.31rem] font-normal leading-[1.19] tracking-[0.231px] text-white/90 max-w-2xl text-pretty"
+            className="mt-5 text-[1.31rem] font-normal leading-[1.19] tracking-[0.231px] text-white/90 max-w-2xl xl:max-w-3xl 2xl:max-w-4xl text-pretty"
             data-testid="home-hero-subtitle"
           >
             Build iwagumi layouts, moss walls, and lush carpets — everything here is geared toward freshwater planted
@@ -59,7 +59,7 @@ export default function Home() {
       </section>
 
       <section className="bg-apple-gray text-ink-950" data-testid="home-value-props">
-        <div className="max-w-content mx-auto px-4 sm:px-6 py-16 md:py-24">
+        <div className="layout-container py-16 md:py-24">
           <h2
             className="font-display text-section-heading font-semibold text-ink-950 mb-2 text-balance max-w-2xl"
             data-testid="home-values-heading"
@@ -69,7 +69,7 @@ export default function Home() {
           <p className="text-apple-textSecondary text-caption max-w-2xl mb-10 leading-[1.29] tracking-[-0.224px]">
             Mosses, aquascaping stone, and maintenance supplies — browse by category or filter by sustainability signals.
           </p>
-          <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6 items-stretch">
+          <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6 xl:gap-8 items-stretch">
             <li
               className="flex flex-col h-full rounded-lg bg-white p-6 shadow-apple-card"
               data-testid="home-value-fast"
@@ -102,7 +102,7 @@ export default function Home() {
       </section>
 
       <section className="bg-apple-black text-white py-16 md:py-24">
-        <div className="max-w-content mx-auto px-4 sm:px-6">
+        <div className="layout-container">
           <h2
             className="font-display text-[2rem] md:text-section-heading font-semibold mb-2 text-balance text-white leading-[1.1]"
             data-testid="home-featured-heading"
@@ -117,7 +117,10 @@ export default function Home() {
               Loading…
             </p>
           )}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch" data-testid="home-featured-grid">
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 items-stretch"
+            data-testid="home-featured-grid"
+          >
             {products?.map((p) => (
               <ProductCard
                 key={p.id}
