@@ -1,17 +1,25 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client.js";
-import ProductCard from "../components/ProductCard.jsx";
+import FeaturedCarousel from "../components/FeaturedCarousel.jsx";
+import LearnMoreModal from "../components/LearnMoreModal.jsx";
+
+const FEATURED_LIMIT = 12;
 
 export default function Home() {
+  const [learnMoreOpen, setLearnMoreOpen] = useState(false);
+
   const { data: products, isLoading } = useQuery({
     queryKey: ["products", "featured"],
     queryFn: () => api("/api/products"),
-    select: (list) => list?.slice(0, 3) ?? [],
+    select: (list) => list?.slice(0, FEATURED_LIMIT) ?? [],
   });
 
   return (
     <div className="w-full min-w-0" data-testid="page-home">
+      <LearnMoreModal open={learnMoreOpen} onClose={() => setLearnMoreOpen(false)} />
+
       <section className="bg-apple-black text-white" data-testid="home-hero-section">
         <div className="layout-container py-20 md:py-28 md:min-h-[70vh] flex flex-col justify-center">
           <p
@@ -48,12 +56,14 @@ export default function Home() {
             >
               Shop catalog
             </Link>
-            <Link
-              to="/products"
-              className="inline-flex items-center justify-center rounded-[980px] border border-apple-linkDark px-5 py-2 text-caption text-apple-linkDark hover:underline"
+            <button
+              type="button"
+              onClick={() => setLearnMoreOpen(true)}
+              className="inline-flex items-center justify-center rounded-[980px] border border-apple-linkDark px-5 py-2 text-caption text-apple-linkDark hover:bg-white/5 hover:underline"
+              data-testid="home-learn-more-btn"
             >
               Learn more
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -110,30 +120,9 @@ export default function Home() {
             Featured picks
           </h2>
           <p className="text-caption text-white/70 mb-10 max-w-2xl leading-[1.29] tracking-[-0.224px]">
-            A few popular listings from the catalog.
+            Popular listings from the catalog — scroll the row or let it play automatically.
           </p>
-          {isLoading && (
-            <p className="text-white/60 text-caption" data-testid="home-featured-loading">
-              Loading…
-            </p>
-          )}
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 items-stretch"
-            data-testid="home-featured-grid"
-          >
-            {products?.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                linkTestId={`home-featured-${p.id}`}
-                imageTestId={`home-featured-img-${p.id}`}
-                imageAspectClass="aspect-[4/3]"
-                maxHighlights={2}
-                featured
-                darkSection
-              />
-            ))}
-          </div>
+          <FeaturedCarousel products={products ?? []} isLoading={isLoading} />
         </div>
       </section>
     </div>
