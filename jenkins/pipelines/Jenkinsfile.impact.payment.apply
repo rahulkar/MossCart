@@ -1,11 +1,6 @@
 // Manual: apply semantic payment/checkout API change for impact testing (no commit/push).
 pipeline {
-  // jenkins-demo mounts the host repo at /workspace/mosscart — run here so impact edits hit the bind mount (host disk).
-  agent {
-    node {
-      customWorkspace '/workspace/mosscart'
-    }
-  }
+  agent any
 
   options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
@@ -24,14 +19,18 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        checkout scm
+        ws('/workspace/mosscart') {
+          checkout scm
+        }
       }
     }
 
     stage('Apply impact: payment') {
       steps {
-        withEnv(["IMPACT_TARGET_DIR=${params.IMPACT_TARGET_DIR ?: ''}"]) {
-          sh 'bash jenkins/scripts/impact-mutate.sh apply payment'
+        ws('/workspace/mosscart') {
+          withEnv(["IMPACT_TARGET_DIR=${params.IMPACT_TARGET_DIR ?: ''}"]) {
+            sh 'bash jenkins/scripts/impact-mutate.sh apply payment'
+          }
         }
       }
     }

@@ -5,7 +5,7 @@ jenkins:
     For trusted local use only; do not expose this controller to the internet.
 
     Jobs "mosscart-full" and "mosscart-smoke" load the Jenkinsfile from file:///workspace/mosscart (this repo on your
-    host, bind-mounted read-write). Manual "mosscart-impact-*" jobs use customWorkspace /workspace/mosscart so edits land on the host mount (revert after).
+    host, bind-mounted read-write). Manual "mosscart-impact-*" jobs use ws('/workspace/mosscart') so git checkout and impact scripts run on the host mount (revert after).
     If there is no .git yet, the container entrypoint runs git init and a first
     commit. Otherwise ensure at least one commit exists. See README.
   securityRealm:

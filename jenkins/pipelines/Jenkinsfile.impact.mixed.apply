@@ -1,10 +1,6 @@
 // Manual: apply mixed cart API + UI change for impact testing (no commit/push).
 pipeline {
-  agent {
-    node {
-      customWorkspace '/workspace/mosscart'
-    }
-  }
+  agent any
 
   options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
@@ -23,14 +19,18 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        checkout scm
+        ws('/workspace/mosscart') {
+          checkout scm
+        }
       }
     }
 
     stage('Apply impact: mixed') {
       steps {
-        withEnv(["IMPACT_TARGET_DIR=${params.IMPACT_TARGET_DIR ?: ''}"]) {
-          sh 'bash jenkins/scripts/impact-mutate.sh apply mixed'
+        ws('/workspace/mosscart') {
+          withEnv(["IMPACT_TARGET_DIR=${params.IMPACT_TARGET_DIR ?: ''}"]) {
+            sh 'bash jenkins/scripts/impact-mutate.sh apply mixed'
+          }
         }
       }
     }
