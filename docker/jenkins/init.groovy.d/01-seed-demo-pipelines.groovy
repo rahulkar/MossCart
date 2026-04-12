@@ -47,6 +47,15 @@ Thread.start('mosscart-seed-demo-pipelines') {
     try {
       createPipelineFromScm('mosscart-full', 'Jenkinsfile')
       createPipelineFromScm('mosscart-smoke', 'jenkins/pipelines/Jenkinsfile.smoke')
+      // Manual impact-testing jobs (local mutate + optional IMPACT_TARGET_DIR sync; no push)
+      createPipelineFromScm('mosscart-impact-payment-apply', 'jenkins/pipelines/Jenkinsfile.impact.payment.apply')
+      createPipelineFromScm('mosscart-impact-payment-revert', 'jenkins/pipelines/Jenkinsfile.impact.payment.revert')
+      createPipelineFromScm('mosscart-impact-mixed-apply', 'jenkins/pipelines/Jenkinsfile.impact.mixed.apply')
+      createPipelineFromScm('mosscart-impact-mixed-revert', 'jenkins/pipelines/Jenkinsfile.impact.mixed.revert')
+      createPipelineFromScm('mosscart-impact-profile-apply', 'jenkins/pipelines/Jenkinsfile.impact.profile.apply')
+      createPipelineFromScm('mosscart-impact-profile-revert', 'jenkins/pipelines/Jenkinsfile.impact.profile.revert')
+      createPipelineFromScm('mosscart-impact-checkout-apply', 'jenkins/pipelines/Jenkinsfile.impact.checkout.apply')
+      createPipelineFromScm('mosscart-impact-checkout-revert', 'jenkins/pipelines/Jenkinsfile.impact.checkout.revert')
     } finally {
       acl.close()
     }
