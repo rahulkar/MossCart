@@ -1,3 +1,4 @@
 # Shell scripts must use LF inside Linux containers (CRLF breaks shebang / exec)
 docker/jenkins/*.sh text eol=lf
+jenkins/scripts/*.sh text eol=lf
 docker/jenkins/init.groovy.d/*.groovy text eol=lf
