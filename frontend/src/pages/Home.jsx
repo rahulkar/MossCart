@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client.js";
-import ProductImage from "../components/ProductImage.jsx";
+import ProductCard from "../components/ProductCard.jsx";
 
 export default function Home() {
   const { data: products, isLoading } = useQuery({
@@ -106,25 +106,15 @@ export default function Home() {
         )}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch" data-testid="home-featured-grid">
           {products?.map((p) => (
-            <Link
+            <ProductCard
               key={p.id}
-              to={`/products/${p.id}`}
-              className="group flex flex-col h-full rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-teal-200/80 transition"
-              data-testid={`home-featured-${p.id}`}
-            >
-              <div className="aspect-[4/3] bg-slate-100 overflow-hidden shrink-0">
-                <ProductImage
-                  src={p.imageUrl}
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                  testId={`home-featured-img-${p.id}`}
-                  wrapClassName="h-full w-full min-h-0"
-                />
-              </div>
-              <div className="p-5 flex flex-col flex-1 min-h-0">
-                <h3 className="font-semibold text-ink-950 leading-snug line-clamp-2">{p.name}</h3>
-                <p className="text-accent font-semibold mt-auto pt-3">${(p.priceCents / 100).toFixed(2)}</p>
-              </div>
-            </Link>
+              product={p}
+              linkTestId={`home-featured-${p.id}`}
+              imageTestId={`home-featured-img-${p.id}`}
+              imageAspectClass="aspect-[4/3]"
+              maxHighlights={2}
+              featured
+            />
           ))}
         </div>
       </section>

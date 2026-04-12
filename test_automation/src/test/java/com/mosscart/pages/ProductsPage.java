@@ -104,6 +104,12 @@ public class ProductsPage extends BasePage {
     List<WebElement> cards = driver.findElements(PRODUCT_CARD);
     if (cards.isEmpty()) throw new AssertionError("No product cards");
     String id = cards.get(0).getAttribute("data-testid").replace("product-card-", "");
-    waitVisible(By.cssSelector("[data-testid='product-card-eco-" + id + "']"));
+    WebElement eco = waitVisible(By.cssSelector("[data-testid='product-card-eco-" + id + "']"));
+    String text = eco.getText().replace('\n', ' ').trim();
+    if ("5".equals(minScore)) {
+      if (!text.toLowerCase().contains("green index: 5/5")) {
+        throw new AssertionError("Expected first card to show Green index 5/5, was: " + text);
+      }
+    }
   }
 }

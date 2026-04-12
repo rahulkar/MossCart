@@ -18,16 +18,22 @@ model User {
 }
 
 model Product {
-  id          String     @id @default(cuid())
-  name        String
-  description String
-  priceCents  Int
-  imageUrl    String     @default("")
-  category    String     @default("General")
-  ecoScore    Int        @default(3)
-  stock       Int        @default(0)
-  cartItems   CartItem[]
-  orderItems  OrderItem[]
+  id           String     @id @default(cuid())
+  name         String
+  description  String
+  subtitle     String     @default("")
+  sku          String     @default("")
+  priceCents   Int
+  imageUrl     String     @default("")
+  category     String     @default("General")
+  ecoScore     Int        @default(3)
+  stock        Int        @default(0)
+  /// JSON string[] — short selling points for cards and detail
+  highlights   Json?
+  /// JSON { label: string, value: string }[] — spec rows on detail
+  specs        Json?
+  cartItems    CartItem[]
+  orderItems   OrderItem[]
 }
 
 model CartItem {

@@ -124,6 +124,16 @@ public class CatalogSteps {
     p.openFirstProduct();
   }
 
+  @When("they open the first catalog hit from the current grid")
+  public void openFirstHitInCurrentGrid() {
+    new ProductsPage().openFirstProduct();
+  }
+
+  @Then("the product detail should show SKU and expanded merchandising copy")
+  public void richPdp() {
+    new ProductDetailPage().assertRichMerchandisingVisible();
+  }
+
   @When("they add the product to cart from the detail page")
   public void addFromPdp() {
     ProductDetailPage d = new ProductDetailPage();

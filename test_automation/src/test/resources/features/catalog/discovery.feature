@@ -17,6 +17,12 @@ Feature: Catalog discovery and filters
     When they search the catalog for text "Java Moss"
     Then at least one product card should appear in the grid
 
+  Scenario: Search matches catalog SKU codes
+    When they search the catalog for text "MC-MOSS-JAVA-01"
+    Then at least one product card should appear in the grid
+    When they open the first catalog hit from the current grid
+    Then the product detail should show SKU and expanded merchandising copy
+
   Scenario: Nonsense search yields empty state
     When they search the catalog for text "zzzz-no-sku-zzzz"
     Then the catalog should report no matching products

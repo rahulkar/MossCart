@@ -10,6 +10,9 @@ public class ProductDetailPage extends BasePage {
   private static final By ECO_SCORE = By.cssSelector("[data-testid='product-eco-score']");
   private static final By IMAGE_PLACEHOLDER = By.cssSelector("[data-testid='product-image-placeholder']");
   private static final By CATEGORY = By.cssSelector("[data-testid='product-category']");
+  private static final By SKU = By.cssSelector("[data-testid='product-sku']");
+  private static final By HIGHLIGHTS = By.cssSelector("[data-testid='product-highlights']");
+  private static final By SPECS = By.cssSelector("[data-testid='product-specs']");
 
   public void addToCart() {
     waitVisible(PRODUCT_NAME);
@@ -42,5 +45,12 @@ public class ProductDetailPage extends BasePage {
 
   public void assertOutOfStockVisible() {
     wait.until(d -> d.findElement(By.cssSelector("[data-testid='product-stock']")).getText().contains("Out of stock"));
+  }
+
+  /** Asserts enriched PDP blocks (SKU, highlights, spec grid) rendered for seeded catalog rows. */
+  public void assertRichMerchandisingVisible() {
+    waitVisible(SKU);
+    waitVisible(HIGHLIGHTS);
+    waitVisible(SPECS);
   }
 }

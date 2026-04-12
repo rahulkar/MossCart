@@ -34,6 +34,11 @@ public class HomeSteps {
     new HomePage().assertFeaturedGridVisible();
   }
 
+  @Then("featured product cards should expose Green Index scores")
+  public void featuredEco() {
+    new HomePage().assertFeaturedCardsExposeGreenIndex();
+  }
+
   @When("the shopper uses the primary shop call-to-action")
   public void ctaShop() {
     new HomePage().open();

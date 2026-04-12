@@ -20,7 +20,12 @@ router.get("/", async (req, res) => {
   const and = [];
   if (q) {
     and.push({
-      OR: [{ name: { contains: q } }, { description: { contains: q } }],
+      OR: [
+        { name: { contains: q } },
+        { description: { contains: q } },
+        { subtitle: { contains: q } },
+        { sku: { contains: q } },
+      ],
     });
   }
   if (category) {

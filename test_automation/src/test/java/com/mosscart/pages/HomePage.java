@@ -1,6 +1,8 @@
 package com.mosscart.pages;
 
+import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class HomePage extends BasePage {
 
@@ -46,5 +48,13 @@ public class HomePage extends BasePage {
 
   public void openFirstFeaturedProduct() {
     waitVisible(FEATURED_GRID).findElements(By.cssSelector("a[href^='/products/']")).get(0).click();
+  }
+
+  public void assertFeaturedCardsExposeGreenIndex() {
+    WebElement grid = waitVisible(FEATURED_GRID);
+    List<WebElement> eco = grid.findElements(By.cssSelector("[data-testid^='product-card-eco-']"));
+    if (eco.isEmpty()) {
+      throw new AssertionError("Expected Green Index row on a featured card");
+    }
   }
 }

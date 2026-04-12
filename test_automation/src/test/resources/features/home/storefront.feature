@@ -21,6 +21,10 @@ Feature: Storefront home experience
     Given the shopper navigates to the home page
     Then the featured product grid should be visible
 
+  Scenario: Featured cards carry Green Index merchandising
+    Given the shopper navigates to the home page
+    Then featured product cards should expose Green Index scores
+
   Scenario: Primary CTA hands off to the catalog
     When the shopper uses the primary shop call-to-action
     Then the product catalog page should load

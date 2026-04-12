@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client.js";
-import ProductImage from "../components/ProductImage.jsx";
+import ProductCard from "../components/ProductCard.jsx";
 
 function buildQuery(q, category, ecoMin) {
   const params = new URLSearchParams();
@@ -45,7 +44,7 @@ export default function Products() {
           <input
             id="product-search"
             type="search"
-            placeholder="Search by name or description…"
+            placeholder="Search name, SKU, or description…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:ring-2 focus:ring-accent focus:border-accent outline-none"
@@ -89,38 +88,16 @@ export default function Products() {
         </div>
       </div>
       {isLoading && <p data-testid="products-loading">Loading…</p>}
-      <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="products-grid">
+      <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7" data-testid="products-grid">
         {products?.map((p) => (
-          <li key={p.id}>
-            <Link
-              to={`/products/${p.id}`}
-              className="block rounded-xl border border-slate-200 bg-white overflow-hidden hover:shadow-lg transition"
-              data-testid={`product-card-${p.id}`}
-              data-image-state={p.imageUrl ? "present" : "missing"}
-            >
-              <div className="aspect-square bg-slate-100 overflow-hidden">
-                <ProductImage
-                  src={p.imageUrl}
-                  className="w-full h-full object-cover"
-                  testId={`product-card-image-${p.id}`}
-                  wrapClassName="h-full w-full"
-                />
-              </div>
-              <div className="p-4">
-                <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">{p.category}</p>
-                <h2 className="font-semibold text-ink-950">{p.name}</h2>
-                <p className="text-sm text-slate-500 line-clamp-2 mt-1">{p.description}</p>
-                <p
-                  className="text-xs text-emerald-700 font-medium mt-2"
-                  data-testid={`product-card-eco-${p.id}`}
-                >
-                  Green index: {p.ecoScore}/5
-                </p>
-                <p className="text-accent font-semibold mt-1" data-testid={`product-price-${p.id}`}>
-                  ${(p.priceCents / 100).toFixed(2)}
-                </p>
-              </div>
-            </Link>
+          <li key={p.id} className="min-h-0">
+            <ProductCard
+              product={p}
+              linkTestId={`product-card-${p.id}`}
+              imageTestId={`product-card-image-${p.id}`}
+              imageAspectClass="aspect-square"
+              maxHighlights={2}
+            />
           </li>
         ))}
       </ul>
