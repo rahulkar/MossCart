@@ -99,6 +99,10 @@ public class ProductsPage extends BasePage {
     waitVisible(EMPTY);
   }
 
+  /**
+   * Asserts merchandising copy under {@code data-testid^='product-card-eco-'} matches the catalog filter.
+   * Kept in sync with DESIGN.md-driven UI: label must stay {@code Green index: N/5} (see ProductCard.jsx).
+   */
   public void assertEcoScoreOnFirstCard(String minScore) {
     waitVisible(PRODUCTS_TITLE);
     List<WebElement> cards = driver.findElements(PRODUCT_CARD);

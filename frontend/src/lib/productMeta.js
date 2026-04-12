@@ -16,10 +16,10 @@ export function productSpecs(raw) {
 /** @param {number} stock */
 export function stockMeta(stock) {
   if (stock <= 0) {
-    return { label: "Out of stock", tone: "out", badgeClass: "bg-slate-800/85 text-white" };
+    return { label: "Out of stock", tone: "out", badgeClass: "bg-apple-surface5/95 text-white" };
   }
   if (stock <= 5) {
-    return { label: "Low stock", tone: "low", badgeClass: "bg-amber-500/90 text-white" };
+    return { label: "Low stock", tone: "low", badgeClass: "bg-apple-surface3 text-white" };
   }
-  return { label: "In stock", tone: "ok", badgeClass: "bg-white/90 text-slate-700" };
+  return { label: "In stock", tone: "ok", badgeClass: "bg-white/92 text-apple-nearBlack" };
 }

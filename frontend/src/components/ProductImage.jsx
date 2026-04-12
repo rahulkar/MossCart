@@ -15,7 +15,7 @@ export default function ProductImage({
     <div className={wrapClassName || undefined}>
       {showPlaceholder ? (
         <div
-          className={`flex h-full w-full min-h-[8rem] items-center justify-center bg-slate-200 text-slate-500 text-sm font-medium text-center px-4 ${className}`}
+          className={`flex h-full w-full min-h-[8rem] items-center justify-center bg-apple-gray text-apple-textTertiary text-caption font-medium text-center px-4 tracking-[-0.224px] ${className}`}
           data-testid={`${testId}-placeholder`}
         >
           Image coming soon
