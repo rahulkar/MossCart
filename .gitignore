@@ -1,0 +1,69 @@
+# --- Dependencies ---
+node_modules/
+
+# --- Build outputs ---
+dist/
+build/
+out/
+target/
+
+# --- Vite ---
+.vite/
+*.local
+
+# --- Java / Maven ---
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+replay_pid*
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Test & coverage ---
+coverage/
+.nyc_output/
+allure-results/
+allure-report/
+**/allure-results/
+**/allure-report/
+
+# --- Cucumber (HTML report at repo root) ---
+/cucumber-report.html
+
+# --- Environment (never commit secrets) ---
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# --- SQLite / local DB ---
+*.db
+*.db-journal
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- IDEs ---
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+
+# --- Misc caches ---
+.cache/
+.turbo/
+*.tsbuildinfo
+.eslintcache

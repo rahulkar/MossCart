@@ -1,0 +1,2 @@
+# Bundled with demo image only (see Dockerfile.demo)
+configuration-as-code

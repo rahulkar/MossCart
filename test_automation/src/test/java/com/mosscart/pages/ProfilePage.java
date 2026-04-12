@@ -1,0 +1,69 @@
+package com.mosscart.pages;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class ProfilePage extends BasePage {
+
+  private static final By TITLE = By.cssSelector("[data-testid='profile-title']");
+  private static final By EDIT_BTN = By.cssSelector("[data-testid='profile-edit-btn']");
+  private static final By SAVE_BTN = By.cssSelector("[data-testid='profile-save-btn']");
+  private static final By CANCEL_BTN = By.cssSelector("[data-testid='profile-cancel-btn']");
+  private static final By NAME_INPUT = By.cssSelector("[data-testid='profile-name-input']");
+  private static final By LOGOUT_PROFILE = By.cssSelector("[data-testid='profile-logout-btn']");
+
+  public void open() {
+    openPath("/profile");
+  }
+
+  public void assertLoaded() {
+    waitVisible(TITLE);
+  }
+
+  public void assertHasOrderRow() {
+    wait.until(
+        ExpectedConditions.presenceOfElementLocated(
+            By.cssSelector("[data-testid^='profile-order-']")));
+  }
+
+  public void startEditProfile() {
+    waitVisible(EDIT_BTN).click();
+    waitVisible(NAME_INPUT);
+  }
+
+  public void cancelEditProfile() {
+    waitVisible(CANCEL_BTN).click();
+    waitVisible(EDIT_BTN);
+  }
+
+  public void saveProfileWithName(String newName) {
+    WebElement el = waitVisible(NAME_INPUT);
+    el.clear();
+    el.sendKeys(newName);
+    waitVisible(SAVE_BTN).click();
+    waitVisible(EDIT_BTN);
+  }
+
+  public void openFirstOrderReceipt() {
+    wait.until(
+        ExpectedConditions.presenceOfElementLocated(
+            By.cssSelector("[data-testid^='profile-order-link-']")));
+    driver.findElements(By.cssSelector("a[data-testid^='profile-order-link-']")).get(0).click();
+  }
+
+  public void assertLatestOrderPaymentStatusContains(String fragment) {
+    waitVisible(By.cssSelector("[data-testid='profile-orders']"));
+    List<WebElement> statuses =
+        driver.findElements(By.cssSelector("[data-testid^='profile-order-status-']"));
+    assertThat(statuses).isNotEmpty();
+    assertThat(statuses.get(0).getText().toLowerCase()).contains(fragment.toLowerCase());
+  }
+
+  public void logoutFromProfile() {
+    waitVisible(LOGOUT_PROFILE).click();
+  }
+}

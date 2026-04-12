@@ -1,0 +1,29 @@
+# Pre-baked demo controller — NOT for production. Login: demo / demo
+jenkins:
+  systemMessage: >
+    MossCart demo Jenkins — sign in as user "demo", password "demo".
+    For trusted local use only; do not expose this controller to the internet.
+
+    Jobs "mosscart-full" and "mosscart-smoke" load the Jenkinsfile from file:///workspace/mosscart (this repo on your
+    host, bind-mounted read-write). If there is no .git yet, the container entrypoint runs git init and a first
+    commit. Otherwise ensure at least one commit exists. See README.
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+        - id: "demo"
+          password: "demo"
+          name: "Demo user"
+          properties: []
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: true
+
+tool:
+  # JCasC key is "allure" (not allureCommandline) for allure-jenkins-plugin
+  allure:
+    installations:
+      # Pre-installed in Dockerfile.demo (see ALLURE_VERSION)
+      - name: "Default"
+        home: "/opt/allure-2.32.0"

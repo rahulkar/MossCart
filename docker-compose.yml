@@ -1,0 +1,107 @@
+# Default stack (no profiles): API + storefront + Selenium + demo Jenkins.
+# One command: docker compose up --build -d
+# Optional: profile "test" — test-runner (Maven) is only used via: docker compose --profile test run --rm test-runner ...
+# Optional: profile "ci" — vanilla Jenkins on :8081 (wizard), for production-style setups.
+#
+# Project name fixes container/volume prefixes (e.g. mosscart-api-1, mosscart_sqlite_data) regardless of clone folder name.
+name: mosscart
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: file:/app/data/app.db
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-change-me}
+      NODE_ENV: production
+      # Refresh demo catalog when seed data changes (clears orders/cart; keeps users)
+      RESEED_CATALOG: "true"
+    volumes:
+      - sqlite_data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        VITE_ENABLE_CHECKOUT_FAILURE_SIM: "1"
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  selenium:
+    image: selenium/standalone-chrome:4.27.0
+    shm_size: 2gb
+    expose:
+      - "4444"
+    environment:
+      SE_NODE_MAX_SESSIONS: 4
+    depends_on:
+      - web
+
+  test-runner:
+    profiles:
+      - test
+    image: maven:3.9.9-eclipse-temurin-17
+    working_dir: /workspace/test_automation
+    volumes:
+      - .:/workspace
+    environment:
+      BASE_URL: http://web:80
+      SELENIUM_REMOTE_URL: http://selenium:4444
+      HEADLESS: "1"
+    depends_on:
+      - web
+      - selenium
+
+  jenkins:
+    profiles:
+      - ci
+    # Host docker.sock is root/docker 660 — jenkins user cannot connect without matching GID or root
+    user: root
+    build:
+      context: .
+      dockerfile: docker/jenkins/Dockerfile
+    ports:
+      - "8081:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      MOSSCART_DOCKER_PROJECT: ${MOSSCART_DOCKER_PROJECT:-mosscart}
+    restart: unless-stopped
+
+  jenkins-demo:
+    # Demo only: run as root so docker compose in pipelines can use the mounted docker.sock everywhere
+    user: root
+    build:
+      context: .
+      dockerfile: docker/jenkins/Dockerfile.demo
+    ports:
+      - "8082:8080"
+    volumes:
+      - jenkins_demo_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      # rw: entrypoint may run `git init` if the host folder has no .git (file:// SCM requires a repo)
+      - .:/workspace/mosscart
+    environment:
+      JWT_SECRET: demo-jenkins-jwt-not-secret
+      # Pipelines target this Compose project (must match `docker compose ls` Name — same as top-level `name:` unless overridden with -p)
+      MOSSCART_DOCKER_PROJECT: ${MOSSCART_DOCKER_PROJECT:-mosscart}
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:
+  jenkins_home:
+  jenkins_demo_home:

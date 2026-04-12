@@ -1,0 +1,26 @@
+# Core Pipeline
+workflow-aggregator
+git
+credentials-binding
+ssh-credentials
+structs
+scm-api
+
+# Docker / Compose orchestration from pipeline
+docker-workflow
+pipeline-stage-step
+
+# Test reports (Surefire / JUnit Platform XML if present)
+junit
+
+# Optional UX
+pipeline-stage-view
+build-timeout
+
+# HTML report tab (Cucumber pretty output)
+htmlpublisher
+
+# Allure report (reads test_automation/target/allure-results from pipeline)
+# matrix-project: Allure plugin references hudson.matrix.MatrixAggregatable at load time
+matrix-project
+allure-jenkins-plugin

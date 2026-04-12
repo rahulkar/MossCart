@@ -1,0 +1,52 @@
+# Demo Jenkins: skips setup wizard, JCasC (demo/demo), Allure CLI via CasC installer,
+# pre-seeded Pipeline jobs (file:///workspace/mosscart — mount repo in compose).
+# Keep Docker/Compose/plugin versions aligned with docker/jenkins/Dockerfile.
+FROM jenkins/jenkins:lts-jdk17
+
+USER root
+
+ARG DOCKER_VERSION=27.3.1
+ARG COMPOSE_VERSION=2.29.7
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl ca-certificates git \
+  && curl -fsSL "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz" \
+    | tar xz --strip 1 -C /usr/local/bin docker/docker \
+  && mkdir -p /usr/local/lib/docker/cli-plugins \
+  && curl -fsSL "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-x86_64" \
+    -o /usr/local/lib/docker/cli-plugins/docker-compose \
+  && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose \
+  && git config --system protocol.file.allow always \
+  && git config --system safe.directory '*' \
+  && rm -rf /var/lib/apt/lists/*
+
+ARG ALLURE_VERSION=2.32.0
+RUN curl -fsSL "https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz" \
+    | tar xz -C /opt
+
+COPY docker/jenkins/plugins.txt /tmp/plugins-base.txt
+COPY docker/jenkins/plugins-demo-extra.txt /tmp/plugins-demo-extra.txt
+RUN cat /tmp/plugins-base.txt /tmp/plugins-demo-extra.txt > /usr/share/jenkins/ref/plugins.txt \
+  && chown jenkins:jenkins /usr/share/jenkins/ref/plugins.txt
+
+COPY docker/jenkins/casc-demo.yaml /usr/share/jenkins/ref/casc_configs/jenkins.yaml
+RUN chown -R jenkins:jenkins /usr/share/jenkins/ref/casc_configs
+
+COPY docker/jenkins/init.groovy.d /usr/share/jenkins/ref/init.groovy.d
+RUN chown -R jenkins:jenkins /usr/share/jenkins/ref/init.groovy.d
+
+COPY docker/jenkins/jenkins-demo-entrypoint.sh /usr/local/bin/jenkins-demo-entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/jenkins-demo-entrypoint.sh \
+  && chmod +x /usr/local/bin/jenkins-demo-entrypoint.sh \
+  && chown jenkins:jenkins /usr/local/bin/jenkins-demo-entrypoint.sh
+
+USER jenkins
+
+ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
+# Git plugin blocks file:// remotes unless this is set (seeded jobs use file:///workspace/mosscart)
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true"
+
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
+
+# Invoke via bash so CRLF from Windows checkouts cannot break the shebang (kernel "no such file")
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/jenkins-demo-entrypoint.sh"]
