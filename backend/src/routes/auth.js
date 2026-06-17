@@ -2,66 +2,62 @@ import { Router } from "express";
 import { prisma } from "../db.js";
 import { hashPassword, comparePassword, signToken } from "../auth.js";
 import { requireAuth } from "../middleware.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
+import { validate } from "../middleware/validate.js";
+import { registerSchema, loginSchema } from "../validators/auth.js";
+import { AppError } from "../errors/AppError.js";
 
 const router = Router();
 
-router.post("/register", async (req, res) => {
-  try {
-    const { email, password, name } = req.body || {};
-    if (!email || !password || !name) {
-      return res.status(400).json({ error: "email, password, and name required" });
-    }
-    const existing = await prisma.user.findUnique({ where: { email: String(email) } });
+const safeUserSelect = { id: true, email: true, name: true, createdAt: true };
+
+router.post(
+  "/register",
+  validate(registerSchema),
+  asyncHandler(async (req, res) => {
+    const { email, password, name } = req.body;
+    const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
-      return res.status(409).json({ error: "Email already registered" });
+      throw new AppError("Email already registered", 409, "email_in_use");
     }
-    const passwordHash = await hashPassword(String(password));
+    const passwordHash = await hashPassword(password);
     const user = await prisma.user.create({
-      data: {
-        email: String(email).trim().toLowerCase(),
-        passwordHash,
-        name: String(name).trim(),
-      },
-      select: { id: true, email: true, name: true, createdAt: true },
+      data: { email, passwordHash, name },
+      select: safeUserSelect,
     });
     const token = signToken(user.id);
     res.status(201).json({ user, token });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Registration failed" });
-  }
-});
+  })
+);
 
-router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body || {};
-    if (!email || !password) {
-      return res.status(400).json({ error: "email and password required" });
-    }
-    const user = await prisma.user.findUnique({
-      where: { email: String(email).trim().toLowerCase() },
-    });
-    if (!user || !(await comparePassword(String(password), user.passwordHash))) {
-      return res.status(401).json({ error: "Invalid credentials" });
+router.post(
+  "/login",
+  validate(loginSchema),
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !(await comparePassword(password, user.passwordHash))) {
+      throw new AppError("Invalid credentials", 401, "invalid_credentials");
     }
     const token = signToken(user.id);
     res.json({
       user: { id: user.id, email: user.email, name: user.name, createdAt: user.createdAt },
       token,
     });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Login failed" });
-  }
-});
+  })
+);
 
-router.get("/me", requireAuth, async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: { id: req.userId },
-    select: { id: true, email: true, name: true, createdAt: true },
-  });
-  if (!user) return res.status(404).json({ error: "User not found" });
-  res.json(user);
-});
+router.get(
+  "/me",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: safeUserSelect,
+    });
+    if (!user) throw new AppError("User not found", 404, "not_found");
+    res.json(user);
+  })
+);
 
 export default router;

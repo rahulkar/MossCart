@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/client.js";
 import { useAuth } from "../auth/AuthContext.jsx";
 import ProductImage from "../components/ProductImage.jsx";
+import { formatPrice } from "../lib/format.js";
 
 const inputQty =
   "w-16 rounded-[11px] bg-apple-filterBg border-[3px] border-apple-filterBorder px-2 py-1 text-center text-[17px] focus:ring-2 focus:ring-accent outline-none";
@@ -36,7 +37,11 @@ export default function Cart() {
       <div className="bg-apple-gray min-h-full w-full">
         <div className="layout-container py-16 text-center" data-testid="page-cart-guest">
           <p className="text-apple-textSecondary">Sign in to view your cart.</p>
-          <Link to="/login" className="text-apple-link font-semibold mt-4 inline-block hover:underline" data-testid="cart-login-link">
+          <Link
+            to="/login"
+            className="text-apple-link font-semibold mt-4 inline-block hover:underline"
+            data-testid="cart-login-link"
+          >
             Log in
           </Link>
         </div>
@@ -44,13 +49,15 @@ export default function Cart() {
     );
   }
 
-  const total =
-    items?.reduce((sum, line) => sum + line.product.priceCents * line.quantity, 0) ?? 0;
+  const total = items?.reduce((sum, line) => sum + line.product.priceCents * line.quantity, 0) ?? 0;
 
   return (
     <div className="bg-apple-gray min-h-full w-full">
       <div className="layout-container py-10" data-testid="page-cart">
-        <h1 className="font-display text-section-heading font-semibold text-ink-950 mb-8 leading-[1.1]" data-testid="cart-title">
+        <h1
+          className="font-display text-section-heading font-semibold text-ink-950 mb-8 leading-[1.1]"
+          data-testid="cart-title"
+        >
           Your cart
         </h1>
         {isLoading && (
@@ -59,9 +66,16 @@ export default function Cart() {
           </p>
         )}
         {!isLoading && (!items || items.length === 0) && (
-          <div className="rounded-lg bg-white p-12 text-center shadow-apple-card" data-testid="cart-empty">
+          <div
+            className="rounded-lg bg-white p-12 text-center shadow-apple-card"
+            data-testid="cart-empty"
+          >
             <p className="text-apple-textSecondary">Your cart is empty.</p>
-            <Link to="/products" className="text-apple-link font-semibold mt-4 inline-block hover:underline" data-testid="cart-shop-link">
+            <Link
+              to="/products"
+              className="text-apple-link font-semibold mt-4 inline-block hover:underline"
+              data-testid="cart-shop-link"
+            >
               Browse products
             </Link>
           </div>
@@ -90,7 +104,7 @@ export default function Cart() {
                       {line.product.name}
                     </Link>
                     <p className="text-caption text-apple-textTertiary tracking-[-0.224px]">
-                      ${(line.product.priceCents / 100).toFixed(2)} each
+                      {formatPrice(line.product.priceCents)} each
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -111,8 +125,11 @@ export default function Cart() {
                       data-testid={`cart-line-qty-${line.id}`}
                     />
                   </div>
-                  <p className="font-semibold w-24 text-right text-ink-950" data-testid={`cart-line-subtotal-${line.id}`}>
-                    ${((line.product.priceCents * line.quantity) / 100).toFixed(2)}
+                  <p
+                    className="font-semibold w-24 text-right text-ink-950"
+                    data-testid={`cart-line-subtotal-${line.id}`}
+                  >
+                    {formatPrice(line.product.priceCents * line.quantity)}
                   </p>
                   <button
                     type="button"
@@ -127,8 +144,11 @@ export default function Cart() {
             </ul>
             <div className="mt-8 flex justify-between items-center pt-6" data-testid="cart-summary">
               <span className="text-[1.31rem] font-semibold text-apple-textSecondary">Total</span>
-              <span className="text-section-heading font-semibold text-ink-950 leading-[1.1]" data-testid="cart-total">
-                ${(total / 100).toFixed(2)}
+              <span
+                className="text-section-heading font-semibold text-ink-950 leading-[1.1]"
+                data-testid="cart-total"
+              >
+                {formatPrice(total)}
               </span>
             </div>
             <Link

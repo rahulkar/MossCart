@@ -1,16 +1,15 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-in-production";
+import { config } from "./config.js";
 
 export function signToken(userId) {
-  return jwt.sign({ sub: userId }, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ sub: userId }, config.JWT_SECRET, { expiresIn: "7d" });
 }
 
 export function verifyToken(token) {
   if (!token) return null;
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, config.JWT_SECRET);
     return decoded.sub;
   } catch {
     return null;

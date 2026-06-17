@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext.jsx";
-
-const field =
-  "w-full rounded-[11px] bg-apple-filterBg border-[3px] border-apple-filterBorder px-3.5 py-2.5 text-[17px] text-ink-950 focus:ring-2 focus:ring-accent outline-none";
+import Input from "../components/ui/Input.jsx";
+import Button from "../components/ui/Button.jsx";
 
 export default function Register() {
   const { register } = useAuth();
@@ -28,71 +27,59 @@ export default function Register() {
     <div className="bg-apple-gray min-h-full w-full">
       <div className="layout-container py-16 flex flex-col items-stretch sm:items-center">
         <div className="w-full max-w-md sm:mx-auto" data-testid="page-register">
-        <h1 className="font-display text-section-heading font-semibold text-ink-950 mb-2 leading-[1.1]" data-testid="register-title">
-          Create account
-        </h1>
-        <p className="text-apple-textSecondary mb-8 leading-[1.47] tracking-[-0.0234em]">
-          Already have an account?{" "}
-          <Link to="/login" className="text-apple-link font-semibold hover:underline" data-testid="register-login-link">
-            Log in
-          </Link>
-        </p>
-        <form onSubmit={submit} className="space-y-4" data-testid="register-form">
-          <div>
-            <label htmlFor="register-name" className="block text-caption font-semibold text-ink-950 mb-1 tracking-[-0.224px]">
-              Name
-            </label>
-            <input
+          <h1
+            className="font-display text-section-heading font-semibold text-ink-950 mb-2 leading-[1.1]"
+            data-testid="register-title"
+          >
+            Create account
+          </h1>
+          <p className="text-apple-textSecondary mb-8 leading-[1.47] tracking-[-0.0234em]">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-apple-link font-semibold hover:underline"
+              data-testid="register-login-link"
+            >
+              Log in
+            </Link>
+          </p>
+          <form onSubmit={submit} className="space-y-4" data-testid="register-form">
+            <Input
               id="register-name"
-              required
+              label="Name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={field}
+              onChange={setName}
+              required
               data-testid="register-name"
             />
-          </div>
-          <div>
-            <label htmlFor="register-email" className="block text-caption font-semibold text-ink-950 mb-1 tracking-[-0.224px]">
-              Email
-            </label>
-            <input
+            <Input
               id="register-email"
+              label="Email"
               type="email"
-              required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={field}
+              onChange={setEmail}
+              required
               data-testid="register-email"
             />
-          </div>
-          <div>
-            <label htmlFor="register-password" className="block text-caption font-semibold text-ink-950 mb-1 tracking-[-0.224px]">
-              Password
-            </label>
-            <input
+            <Input
               id="register-password"
+              label="Password"
               type="password"
+              value={password}
+              onChange={setPassword}
               required
               minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={field}
               data-testid="register-password"
             />
-          </div>
-          {error && (
-            <p className="text-red-600 text-caption" data-testid="register-error">
-              {error}
-            </p>
-          )}
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-accent text-white py-2 px-[15px] text-[17px] font-normal hover:bg-accent-hover border border-transparent"
-            data-testid="register-submit"
-          >
-            Sign up
-          </button>
-        </form>
+            {error && (
+              <p className="text-red-600 text-caption" data-testid="register-error">
+                {error}
+              </p>
+            )}
+            <Button type="submit" className="w-full" data-testid="register-submit">
+              Sign up
+            </Button>
+          </form>
         </div>
       </div>
     </div>

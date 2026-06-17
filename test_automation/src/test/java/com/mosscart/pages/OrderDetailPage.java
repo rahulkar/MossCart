@@ -31,4 +31,17 @@ public class OrderDetailPage extends BasePage {
     String text = waitVisible(By.cssSelector("[data-testid='order-detail-total']")).getText();
     assertThat(Money.usdSnippetToCents(text)).isEqualTo(expectedCents);
   }
+
+  public void assertMetaContainsStatus(String status) {
+    String text = waitVisible(By.cssSelector("[data-testid='order-detail-meta']")).getText();
+    assertThat(text.toLowerCase()).contains(status.toLowerCase());
+  }
+
+  public void assertNotFoundVisible() {
+    waitVisible(By.cssSelector("[data-testid='order-detail-not-found']"));
+  }
+
+  public void openOrderRoute(String id) {
+    openPath("/orders/" + id);
+  }
 }

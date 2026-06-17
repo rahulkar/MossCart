@@ -3,12 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client.js";
 import { useAuth } from "../auth/AuthContext.jsx";
 import ProductImage from "../components/ProductImage.jsx";
+import { formatPrice, formatDate } from "../lib/format.js";
 
 export default function OrderDetail() {
   const { id } = useParams();
   const { user } = useAuth();
 
-  const { data: order, isLoading, error } = useQuery({
+  const {
+    data: order,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["order", id],
     queryFn: () => api(`/api/orders/${id}`),
     enabled: Boolean(user && id),
@@ -18,7 +23,11 @@ export default function OrderDetail() {
     return (
       <div className="bg-apple-gray min-h-full w-full">
         <div className="layout-container py-16 text-center" data-testid="page-order-guest">
-          <Link to="/login" className="text-apple-link font-semibold hover:underline" data-testid="order-login-link">
+          <Link
+            to="/login"
+            className="text-apple-link font-semibold hover:underline"
+            data-testid="order-login-link"
+          >
             Log in
           </Link>{" "}
           to view this order.
@@ -29,7 +38,10 @@ export default function OrderDetail() {
 
   if (isLoading) {
     return (
-      <div className="layout-container py-16 text-apple-textSecondary" data-testid="order-detail-loading">
+      <div
+        className="layout-container py-16 text-apple-textSecondary"
+        data-testid="order-detail-loading"
+      >
         Loading order…
       </div>
     );
@@ -39,7 +51,11 @@ export default function OrderDetail() {
     return (
       <div className="layout-container py-16" data-testid="order-detail-not-found">
         <p className="text-ink-950">Order not found.</p>
-        <Link to="/profile" className="text-apple-link mt-4 inline-block hover:underline" data-testid="order-back-profile">
+        <Link
+          to="/profile"
+          className="text-apple-link mt-4 inline-block hover:underline"
+          data-testid="order-back-profile"
+        >
           Back to profile
         </Link>
       </div>
@@ -56,17 +72,28 @@ export default function OrderDetail() {
         >
           ← Profile
         </Link>
-        <h1 className="font-display text-section-heading font-semibold text-ink-950 leading-[1.1]" data-testid="order-detail-title">
+        <h1
+          className="font-display text-section-heading font-semibold text-ink-950 leading-[1.1]"
+          data-testid="order-detail-title"
+        >
           Order receipt
         </h1>
-        <p className="text-caption text-apple-textTertiary mt-2 tracking-[-0.224px]" data-testid="order-detail-meta">
-          {order.paymentStatus} · {new Date(order.createdAt).toLocaleString()}
+        <p
+          className="text-caption text-apple-textTertiary mt-2 tracking-[-0.224px]"
+          data-testid="order-detail-meta"
+        >
+          {order.paymentStatus} · {formatDate(order.createdAt)}
         </p>
-        <p className="text-tile-heading font-semibold text-ink-950 mt-6 leading-[1.14]" data-testid="order-detail-total">
-          Total ${(order.totalCents / 100).toFixed(2)}
+        <p
+          className="text-tile-heading font-semibold text-ink-950 mt-6 leading-[1.14]"
+          data-testid="order-detail-total"
+        >
+          Total {formatPrice(order.totalCents)}
         </p>
         <section className="mt-8" data-testid="order-detail-lines">
-          <h2 className="font-semibold text-tile-heading text-ink-950 mb-4 leading-[1.14]">Items</h2>
+          <h2 className="font-semibold text-tile-heading text-ink-950 mb-4 leading-[1.14]">
+            Items
+          </h2>
           <ul className="space-y-4">
             {order.items?.map((line) => (
               <li
@@ -83,18 +110,24 @@ export default function OrderDetail() {
                   />
                 </div>
                 <div>
-                  <p className="font-medium text-ink-950" data-testid={`order-line-name-${line.id}`}>
+                  <p
+                    className="font-medium text-ink-950"
+                    data-testid={`order-line-name-${line.id}`}
+                  >
                     {line.product?.name}
                   </p>
                   <p className="text-caption text-apple-textTertiary tracking-[-0.224px]">
-                    Qty {line.quantity} × ${(line.priceCents / 100).toFixed(2)}
+                    Qty {line.quantity} × {formatPrice(line.priceCents)}
                   </p>
                 </div>
               </li>
             ))}
           </ul>
         </section>
-        <section className="mt-10 rounded-lg bg-white p-6 shadow-apple-card" data-testid="order-detail-shipping">
+        <section
+          className="mt-10 rounded-lg bg-white p-6 shadow-apple-card"
+          data-testid="order-detail-shipping"
+        >
           <h2 className="font-semibold text-ink-950 mb-2">Ship to</h2>
           <p className="text-apple-textSecondary" data-testid="order-ship-name">
             {order.shippingName}

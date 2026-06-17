@@ -1,35 +1,34 @@
 import { Router } from "express";
 import { prisma } from "../db.js";
 import { requireAuth } from "../middleware.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
+import { validate } from "../middleware/validate.js";
+import { checkoutSchema } from "../validators/checkout.js";
+import { AppError } from "../errors/AppError.js";
 
 const router = Router();
 
 router.use(requireAuth);
 
-router.post("/", async (req, res) => {
-  try {
+router.post(
+  "/",
+  validate(checkoutSchema),
+  asyncHandler(async (req, res) => {
     const fail = req.query.fail === "1" || req.query.fail === "true";
-    const { shippingName, shippingLine1, shippingCity, shippingPostal } = req.body || {};
-    if (!shippingName || !shippingLine1 || !shippingCity || !shippingPostal) {
-      return res.status(400).json({
-        error: "shippingName, shippingLine1, shippingCity, shippingPostal required",
-      });
-    }
+    const { shippingName, shippingLine1, shippingCity, shippingPostal } = req.body;
 
     const cartItems = await prisma.cartItem.findMany({
       where: { userId: req.userId },
       include: { product: true },
     });
     if (cartItems.length === 0) {
-      return res.status(400).json({ error: "Cart is empty" });
+      throw new AppError("Cart is empty", 400, "empty_cart");
     }
 
     let totalCents = 0;
     for (const line of cartItems) {
       if (line.quantity > line.product.stock) {
-        return res.status(400).json({
-          error: `Insufficient stock for ${line.product.name}`,
-        });
+        throw new AppError(`Insufficient stock for ${line.product.name}`, 400, "insufficient_stock");
       }
       totalCents += line.product.priceCents * line.quantity;
     }
@@ -42,10 +41,10 @@ router.post("/", async (req, res) => {
           userId: req.userId,
           status: paymentStatus === "succeeded" ? "placed" : "payment_failed",
           paymentStatus,
-          shippingName: String(shippingName).trim(),
-          shippingLine1: String(shippingLine1).trim(),
-          shippingCity: String(shippingCity).trim(),
-          shippingPostal: String(shippingPostal).trim(),
+          shippingName,
+          shippingLine1,
+          shippingCity,
+          shippingPostal,
           totalCents,
           items: {
             create: cartItems.map((c) => ({
@@ -72,10 +71,7 @@ router.post("/", async (req, res) => {
     });
 
     res.status(201).json(order);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Checkout failed" });
-  }
-});
+  })
+);
 
 export default router;

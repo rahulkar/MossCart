@@ -3,7 +3,9 @@ import { useAuth } from "../auth/AuthContext.jsx";
 
 function navClass({ isActive }) {
   return `text-xs font-normal tracking-tight transition-colors ${
-    isActive ? "text-white underline decoration-white/80 underline-offset-4" : "text-white/90 hover:text-white hover:underline underline-offset-4"
+    isActive
+      ? "text-white underline decoration-white/80 underline-offset-4"
+      : "text-white/90 hover:text-white hover:underline underline-offset-4"
   }`;
 }
 
@@ -11,7 +13,10 @@ export default function Layout() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen min-h-[100dvh] flex flex-col bg-apple-gray w-full" data-testid="layout-root">
+    <div
+      className="min-h-screen min-h-[100dvh] flex flex-col bg-apple-gray w-full"
+      data-testid="layout-root"
+    >
       <header
         className="sticky top-0 z-40 h-12 border-b border-white/10 bg-black/80 backdrop-blur-[20px] backdrop-saturate-[180%]"
         style={{ WebkitBackdropFilter: "saturate(180%) blur(20px)" }}
@@ -72,8 +77,12 @@ export default function Layout() {
         <Outlet />
       </main>
       <footer className="bg-apple-gray py-10 mt-auto">
-        <div className="layout-container text-center text-micro text-apple-textTertiary" data-testid="footer">
-          MossCart — aquascaping moss, hardscape stone, and tank supplies. Local demo; mock payments only.
+        <div
+          className="layout-container text-center text-micro text-apple-textTertiary"
+          data-testid="footer"
+        >
+          MossCart — aquascaping moss, hardscape stone, and tank supplies. Local demo; mock payments
+          only.
         </div>
       </footer>
     </div>

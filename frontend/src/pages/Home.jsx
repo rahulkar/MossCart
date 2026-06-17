@@ -38,15 +38,15 @@ export default function Home() {
             className="mt-5 text-[1.31rem] font-normal leading-[1.19] tracking-[0.231px] text-white/90 max-w-2xl xl:max-w-3xl 2xl:max-w-4xl text-pretty"
             data-testid="home-hero-subtitle"
           >
-            Build iwagumi layouts, moss walls, and lush carpets — everything here is geared toward freshwater planted
-            tanks.
+            Build iwagumi layouts, moss walls, and lush carpets — everything here is geared toward
+            freshwater planted tanks.
           </p>
           <p
             className="mt-4 text-caption text-white/70 max-w-xl leading-[1.29] tracking-[-0.224px]"
             data-testid="home-green-pitch"
           >
-            Every listing shows a Green Index score so you can favor lower-impact moss, stone, and supply lines at a
-            glance.
+            Every listing shows a Green Index score so you can favor lower-impact moss, stone, and
+            supply lines at a glance.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <Link
@@ -77,23 +77,29 @@ export default function Home() {
             What we offer
           </h2>
           <p className="text-apple-textSecondary text-caption max-w-2xl mb-10 leading-[1.29] tracking-[-0.224px]">
-            Mosses, aquascaping stone, and maintenance supplies — browse by category or filter by sustainability signals.
+            Mosses, aquascaping stone, and maintenance supplies — browse by category or filter by
+            sustainability signals.
           </p>
           <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6 xl:gap-8 items-stretch">
             <li
               className="flex flex-col h-full rounded-lg bg-white p-6 shadow-apple-card"
               data-testid="home-value-fast"
             >
-              <strong className="text-tile-heading font-normal text-ink-950">Moss &amp; hardscape</strong>
+              <strong className="text-tile-heading font-normal text-ink-950">
+                Moss &amp; hardscape
+              </strong>
               <p className="mt-3 text-caption text-apple-textSecondary leading-[1.29] tracking-[-0.224px] flex-1">
-                Live mosses and layout stone in one place, so you can plan carpets and hardscape together.
+                Live mosses and layout stone in one place, so you can plan carpets and hardscape
+                together.
               </p>
             </li>
             <li
               className="flex flex-col h-full rounded-lg bg-white p-6 shadow-apple-card"
               data-testid="home-value-mock"
             >
-              <strong className="text-tile-heading font-normal text-ink-950">Safe checkout flow</strong>
+              <strong className="text-tile-heading font-normal text-ink-950">
+                Safe checkout flow
+              </strong>
               <p className="mt-3 text-caption text-apple-textSecondary leading-[1.29] tracking-[-0.224px] flex-1">
                 Practice the full cart-to-confirmation path with a mock payment — no real card data.
               </p>
@@ -104,7 +110,8 @@ export default function Home() {
             >
               <strong className="text-tile-heading font-normal text-ink-950">Green index</strong>
               <p className="mt-3 text-caption text-apple-textSecondary leading-[1.29] tracking-[-0.224px] flex-1">
-                Each product carries an eco score for quick comparison when you care about sourcing and impact.
+                Each product carries an eco score for quick comparison when you care about sourcing
+                and impact.
               </p>
             </li>
           </ul>

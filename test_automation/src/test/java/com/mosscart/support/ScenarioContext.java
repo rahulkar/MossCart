@@ -13,6 +13,7 @@ public final class ScenarioContext {
   private static final ThreadLocal<String> LAST_ORDER_ID = new ThreadLocal<>();
   private static final ThreadLocal<Integer> EXPECTED_TOTAL_CENTS = new ThreadLocal<>();
   private static final ThreadLocal<Boolean> SIMULATE_PAYMENT_FAILURE = new ThreadLocal<>();
+  private static final ThreadLocal<String> NEW_EMAIL = new ThreadLocal<>();
 
   private ScenarioContext() {}
 
@@ -50,6 +51,10 @@ public final class ScenarioContext {
     SIMULATE_PAYMENT_FAILURE.set(v);
   }
 
+  public static void setNewEmail(String email) {
+    NEW_EMAIL.set(email);
+  }
+
   public static boolean simulatePaymentFailure() {
     Boolean b = SIMULATE_PAYMENT_FAILURE.get();
     return b != null && b;
@@ -83,6 +88,10 @@ public final class ScenarioContext {
     return EXPECTED_TOTAL_CENTS.get();
   }
 
+  public static String getNewEmail() {
+    return NEW_EMAIL.get();
+  }
+
   public static String uniqueEmail(String prefix) {
     return prefix + UUID.randomUUID().toString().replace("-", "") + "@test.local";
   }
@@ -96,5 +105,6 @@ public final class ScenarioContext {
     LAST_ORDER_ID.remove();
     EXPECTED_TOTAL_CENTS.remove();
     SIMULATE_PAYMENT_FAILURE.remove();
+    NEW_EMAIL.remove();
   }
 }

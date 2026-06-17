@@ -134,6 +134,41 @@ public class CatalogSteps {
     new ProductDetailPage().assertRichMerchandisingVisible();
   }
 
+  @Then("the product category breadcrumb should be visible")
+  public void pdpCategory() {
+    new ProductDetailPage().assertCategoryLabelVisible();
+  }
+
+  @Then("the add-to-cart success indicator should be visible")
+  public void pdpAddSuccess() {
+    new ProductDetailPage().waitForAddSuccess();
+  }
+
+  @Then("the product price should be visible")
+  public void pdpPrice() {
+    new ProductDetailPage().assertPriceVisible();
+  }
+
+  @Then("the product stock badge should be visible")
+  public void pdpStockBadge() {
+    new ProductDetailPage().assertStockBadgeVisible();
+  }
+
+  @Then("the product description should be visible")
+  public void pdpDescription() {
+    new ProductDetailPage().assertDescriptionVisible();
+  }
+
+  @Then("the product subtitle should be visible")
+  public void pdpSubtitle() {
+    new ProductDetailPage().assertSubtitleVisible();
+  }
+
+  @Then("the product back link should be visible")
+  public void pdpBackLink() {
+    new ProductDetailPage().assertBackLinkVisible();
+  }
+
   @When("they add the product to cart from the detail page")
   public void addFromPdp() {
     ProductDetailPage d = new ProductDetailPage();

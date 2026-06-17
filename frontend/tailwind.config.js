@@ -28,7 +28,10 @@ export default {
           { lineHeight: "1.07", letterSpacing: "-0.0175rem", fontWeight: "600" },
         ],
         "section-heading": ["2.5rem", { lineHeight: "1.1", fontWeight: "600" }],
-        "tile-heading": ["1.75rem", { lineHeight: "1.14", letterSpacing: "0.01225rem", fontWeight: "400" }],
+        "tile-heading": [
+          "1.75rem",
+          { lineHeight: "1.14", letterSpacing: "0.01225rem", fontWeight: "400" },
+        ],
       },
       maxWidth: {
         /** Legacy alias; prefer .layout-container for fluid full-width layout */

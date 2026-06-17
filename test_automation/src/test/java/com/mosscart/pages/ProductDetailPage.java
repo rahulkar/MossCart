@@ -11,6 +11,12 @@ public class ProductDetailPage extends BasePage {
   private static final By IMAGE_PLACEHOLDER = By.cssSelector("[data-testid='product-image-placeholder']");
   private static final By CATEGORY = By.cssSelector("[data-testid='product-category']");
   private static final By SKU = By.cssSelector("[data-testid='product-sku']");
+  private static final By PRICE = By.cssSelector("[data-testid='product-price']");
+  private static final By STOCK_BADGE = By.cssSelector("[data-testid='product-stock-badge']");
+  private static final By DESCRIPTION = By.cssSelector("[data-testid='product-description']");
+  private static final By SUBTITLE = By.cssSelector("[data-testid='product-subtitle']");
+  private static final By BACK_LINK = By.cssSelector("[data-testid='product-back']");
+  private static final By ADD_ERROR = By.cssSelector("[data-testid='product-add-error']");
   private static final By HIGHLIGHTS = By.cssSelector("[data-testid='product-highlights']");
   private static final By SPECS = By.cssSelector("[data-testid='product-specs']");
 
@@ -52,5 +58,29 @@ public class ProductDetailPage extends BasePage {
     waitVisible(SKU);
     waitVisible(HIGHLIGHTS);
     waitVisible(SPECS);
+  }
+
+  public void assertPriceVisible() {
+    waitVisible(PRICE);
+  }
+
+  public void assertStockBadgeVisible() {
+    waitVisible(STOCK_BADGE);
+  }
+
+  public void assertDescriptionVisible() {
+    waitVisible(DESCRIPTION);
+  }
+
+  public void assertSubtitleVisible() {
+    waitVisible(SUBTITLE);
+  }
+
+  public void assertBackLinkVisible() {
+    waitVisible(BACK_LINK);
+  }
+
+  public void assertAddErrorVisible() {
+    waitVisible(ADD_ERROR);
   }
 }

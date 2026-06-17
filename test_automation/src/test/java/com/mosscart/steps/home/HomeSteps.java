@@ -29,6 +29,21 @@ public class HomeSteps {
     new HomePage().assertValuePropsVisible();
   }
 
+  @Then("the storefront hero subtitle should be visible")
+  public void heroSubtitle() {
+    new HomePage().assertHeroSubtitleVisible();
+  }
+
+  @Then("the individual value proposition cards should be visible")
+  public void valueCards() {
+    new HomePage().assertValueCardsVisible();
+  }
+
+  @Then("the site footer should be visible")
+  public void footerVisible() {
+    new HomePage().assertFooterVisible();
+  }
+
   @Then("the featured product grid should be visible")
   public void featuredGrid() {
     new HomePage().assertFeaturedGridVisible();
@@ -59,5 +74,43 @@ public class HomeSteps {
   @Then("the product detail layout should appear")
   public void detailLayout() {
     new com.mosscart.pages.ProductDetailPage().assertCategoryLabelVisible();
+  }
+
+  @When("they open the Learn more modal")
+  public void openLearnMore() {
+    new HomePage().openLearnMoreModal();
+  }
+
+  @Then("the Learn more modal should be visible")
+  public void learnMoreVisible() {
+    new HomePage().assertLearnMoreModalVisible();
+  }
+
+  @When("they close the Learn more modal")
+  public void closeLearnMore() {
+    new HomePage().closeLearnMoreModal();
+  }
+
+  @Then("the Learn more modal should be hidden")
+  public void learnMoreHidden() {
+    new HomePage().assertLearnMoreModalHidden();
+  }
+
+  @When("they follow the shop link inside the modal")
+  public void modalShopLink() {
+    new HomePage().followLearnMoreShopLink();
+  }
+
+  @When("they navigate the featured carousel to the next slide")
+  public void nextFeaturedSlide() {
+    HomePage h = new HomePage();
+    int before = h.activeFeaturedSlideIndex();
+    h.clickFeaturedNext();
+    h.assertActiveSlideChanged(before);
+  }
+
+  @Then("the featured carousel should display a different active slide")
+  public void carouselChanged() {
+    // assertion handled in the action step
   }
 }

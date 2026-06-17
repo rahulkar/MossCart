@@ -1,9 +1,14 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { execSync } from "node:child_process";
+import { pathToFileURL } from "node:url";
+import { config } from "./config.js";
 import { prisma } from "./db.js";
 import { authOptional } from "./middleware.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/auth.js";
 import productsRoutes from "./routes/products.js";
 import cartRoutes from "./routes/cart.js";
@@ -12,24 +17,44 @@ import usersRoutes from "./routes/users.js";
 import ordersRoutes from "./routes/orders.js";
 import { seedCatalog } from "./seed.js";
 
-const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+export const app = express();
 
+const corsOrigin = config.CORS_ORIGIN || true;
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || true,
+    origin: corsOrigin,
     credentials: true,
   })
 );
+app.use(helmet());
 app.use(express.json());
 app.use(authOptional);
 
-app.get("/api/health", async (_req, res) => {
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(generalLimiter);
+
+if (config.NODE_ENV !== "test") {
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: false,
+  });
+  app.use("/api/auth", authLimiter);
+}
+
+app.get("/api/health", async (_req, res, next) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({ ok: true });
   } catch (e) {
-    res.status(503).json({ ok: false, error: String(e?.message || e) });
+    next(e);
   }
 });
 
@@ -39,6 +64,8 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/orders", ordersRoutes);
+
+app.use(errorHandler);
 
 function migrate() {
   try {
@@ -63,9 +90,16 @@ async function seedCatalogIfNeeded() {
   }
 }
 
-migrate();
-await seedCatalogIfNeeded();
+function startServer() {
+  migrate();
+  seedCatalogIfNeeded().then(() => {
+    app.listen(config.PORT, "0.0.0.0", () => {
+      console.log(`API listening on ${config.PORT}`);
+    });
+  });
+}
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`API listening on ${PORT}`);
-});
+const isMainModule = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
+if (isMainModule) {
+  startServer();
+}

@@ -17,7 +17,7 @@ public class SustainabilitySteps {
 
   @Then("each visible card should expose a Green Index score")
   public void cardsEco() {
-    new ProductsPage().assertEcoScoreOnFirstCard("any");
+    new ProductsPage().assertEcoScoresMatch("any");
   }
 
   @When("they open any stocked product from the eco-heavy Moss category")
@@ -53,6 +53,6 @@ public class SustainabilitySteps {
     if (p.visibleProductCardCount() < 1) {
       throw new AssertionError("Expected eco-filtered products");
     }
-    p.assertEcoScoreOnFirstCard("5");
+    p.assertEcoScoresMatch("5");
   }
 }

@@ -50,11 +50,29 @@ public final class MosscartApi {
   public List<ProductRef> listProducts(String query) {
     String path = "/api/products";
     if (query != null && !query.isBlank()) {
-      path +=
-          "?q="
-              + URLEncoder.encode(query.trim(), StandardCharsets.UTF_8);
+      path += "?q=" + URLEncoder.encode(query.trim(), StandardCharsets.UTF_8);
     }
     String json = get(path, null);
+    return parseProductList(json);
+  }
+
+  public List<ProductRef> listProducts(String category, String ecoMin) {
+    String path = "/api/products";
+    List<String> params = new ArrayList<>();
+    if (category != null && !category.isBlank()) {
+      params.add("category=" + URLEncoder.encode(category.trim(), StandardCharsets.UTF_8));
+    }
+    if (ecoMin != null && !ecoMin.isBlank()) {
+      params.add("ecoMin=" + URLEncoder.encode(ecoMin.trim(), StandardCharsets.UTF_8));
+    }
+    if (!params.isEmpty()) {
+      path += "?" + String.join("&", params);
+    }
+    String json = get(path, null);
+    return parseProductList(json);
+  }
+
+  private List<ProductRef> parseProductList(String json) {
     JsonNode arr = readTree(json);
     if (!arr.isArray()) {
       throw new ApiException(500, "Expected product array");
@@ -67,6 +85,19 @@ public final class MosscartApi {
               n.path("name").asText(""),
               n.path("priceCents").asInt(0),
               n.path("stock").asInt(0)));
+    }
+    return out;
+  }
+
+  public List<String> listCategories() {
+    String json = get("/api/products/categories", null);
+    JsonNode arr = readTree(json);
+    if (!arr.isArray()) {
+      throw new ApiException(500, "Expected category array");
+    }
+    List<String> out = new ArrayList<>();
+    for (JsonNode n : arr) {
+      out.add(n.asText(""));
     }
     return out;
   }
@@ -89,6 +120,40 @@ public final class MosscartApi {
     n.put("productId", productId);
     n.put("quantity", quantity);
     postJson("/api/cart/items", write(n), token);
+  }
+
+  public JsonNode getCart(String token) {
+    String json = get("/api/cart", token);
+    return readTree(json);
+  }
+
+  public JsonNode updateCartItem(String token, String itemId, int quantity) {
+    ObjectNode n = mapper.createObjectNode();
+    n.put("quantity", quantity);
+    String json = patchJson("/api/cart/items/" + itemId, write(n), token);
+    return readTree(json);
+  }
+
+  public void deleteCartItem(String token, String itemId) {
+    delete("/api/cart/items/" + itemId, token);
+  }
+
+  public JsonNode getMe(String token) {
+    String json = get("/api/auth/me", token);
+    return readTree(json);
+  }
+
+  public JsonNode getUsersMe(String token) {
+    String json = get("/api/users/me", token);
+    return readTree(json);
+  }
+
+  public JsonNode updateProfile(String token, String name, String email) {
+    ObjectNode n = mapper.createObjectNode();
+    if (name != null) n.put("name", name);
+    if (email != null) n.put("email", email);
+    String json = putJson("/api/users/me", write(n), token);
+    return readTree(json);
   }
 
   /** POST checkout; returns parsed order JSON node (includes id, totalCents, paymentStatus). */
@@ -148,13 +213,46 @@ public final class MosscartApi {
   }
 
   private String postJson(String path, String jsonBody, String bearer) {
+    return writeRequest("POST", path, jsonBody, bearer);
+  }
+
+  private String putJson(String path, String jsonBody, String bearer) {
+    return writeRequest("PUT", path, jsonBody, bearer);
+  }
+
+  private String patchJson(String path, String jsonBody, String bearer) {
+    return writeRequest("PATCH", path, jsonBody, bearer);
+  }
+
+  private void delete(String path, String bearer) {
     try {
       HttpRequest.Builder b =
           HttpRequest.newBuilder()
               .uri(URI.create(base + path))
               .timeout(Duration.ofSeconds(30))
-              .header("Content-Type", "application/json")
-              .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8));
+              .DELETE();
+      if (bearer != null && !bearer.isBlank()) {
+        b.header("Authorization", "Bearer " + bearer);
+      }
+      send(b.build());
+    } catch (IOException | InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new ApiException(0, e.getMessage());
+    }
+  }
+
+  private String writeRequest(String method, String path, String jsonBody, String bearer) {
+    try {
+      HttpRequest.Builder b =
+          HttpRequest.newBuilder()
+              .uri(URI.create(base + path))
+              .timeout(Duration.ofSeconds(30))
+              .header("Content-Type", "application/json");
+      HttpRequest.BodyPublisher body =
+          jsonBody == null
+              ? HttpRequest.BodyPublishers.noBody()
+              : HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8);
+      b = b.method(method, body);
       if (bearer != null && !bearer.isBlank()) {
         b.header("Authorization", "Bearer " + bearer);
       }
@@ -174,6 +272,29 @@ public final class MosscartApi {
     }
     log.warn("API error {}: {}", res.statusCode(), body);
     throw new ApiException(res.statusCode(), body);
+  }
+
+  public ApiResponse sendExpectingStatus(String method, String path, String jsonBody, String bearer) {
+    try {
+      HttpRequest.Builder b =
+          HttpRequest.newBuilder()
+              .uri(URI.create(base + path))
+              .timeout(Duration.ofSeconds(30));
+      if (jsonBody != null) {
+        b.header("Content-Type", "application/json")
+            .method(method, HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8));
+      } else {
+        b.method(method, HttpRequest.BodyPublishers.noBody());
+      }
+      if (bearer != null && !bearer.isBlank()) {
+        b.header("Authorization", "Bearer " + bearer);
+      }
+      HttpResponse<String> res = http.send(b.build(), HttpResponse.BodyHandlers.ofString());
+      return new ApiResponse(res.statusCode(), res.body() == null ? "" : res.body());
+    } catch (IOException | InterruptedException e) {
+      Thread.currentThread().interrupt();
+      return new ApiResponse(0, e.getMessage());
+    }
   }
 
   private String write(ObjectNode n) {

@@ -61,6 +61,31 @@ public class CartPage extends BasePage {
     waitVisible(By.cssSelector("[data-testid='cart-total']"));
   }
 
+  public void assertFirstLineSubtotalVisible() {
+    String id = firstCartLineId();
+    waitVisible(By.cssSelector("[data-testid='cart-line-subtotal-" + id + "']"));
+  }
+
+  public int parseFirstLineSubtotalCents() {
+    String id = firstCartLineId();
+    String text = waitVisible(By.cssSelector("[data-testid='cart-line-subtotal-" + id + "']")).getText();
+    return com.mosscart.support.Money.usdSnippetToCents(text);
+  }
+
+  public int sumLineSubtotalsCents() {
+    waitVisible(CART_LINES);
+    List<WebElement> lines = driver.findElements(LINE);
+    int sum = 0;
+    for (WebElement li : lines) {
+      String testId = li.getAttribute("data-testid");
+      if (testId == null) continue;
+      String id = testId.replace("cart-line-", "");
+      String text = li.findElement(By.cssSelector("[data-testid='cart-line-subtotal-" + id + "']")).getText();
+      sum += com.mosscart.support.Money.usdSnippetToCents(text);
+    }
+    return sum;
+  }
+
   public String firstCartLineId() {
     waitVisible(CART_LINES);
     List<WebElement> lines = driver.findElements(LINE);

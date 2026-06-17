@@ -3,21 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/client.js";
 import { useAuth } from "../auth/AuthContext.jsx";
 import ProductImage from "../components/ProductImage.jsx";
+import EcoDots from "../components/ui/EcoDots.jsx";
 import { productHighlights, productSpecs, stockMeta } from "../lib/productMeta.js";
-
-function EcoDots({ score }) {
-  const n = Math.min(5, Math.max(0, Number(score) || 0));
-  return (
-    <div className="flex items-center gap-1" aria-hidden>
-      {Array.from({ length: 5 }, (_, i) => (
-        <span
-          key={i}
-          className={`h-2 w-2 rounded-full ${i < n ? "bg-apple-nearBlack" : "bg-black/12"}`}
-        />
-      ))}
-    </div>
-  );
-}
+import { formatPrice } from "../lib/format.js";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -25,7 +13,11 @@ export default function ProductDetail() {
   const { user } = useAuth();
   const qc = useQueryClient();
 
-  const { data: product, isLoading, error } = useQuery({
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["product", id],
     queryFn: () => api(`/api/products/${id}`),
     enabled: Boolean(id),
@@ -52,7 +44,10 @@ export default function ProductDetail() {
 
   if (isLoading) {
     return (
-      <div className="layout-container py-16 text-apple-textSecondary" data-testid="product-detail-loading">
+      <div
+        className="layout-container py-16 text-apple-textSecondary"
+        data-testid="product-detail-loading"
+      >
         Loading…
       </div>
     );
@@ -109,17 +104,26 @@ export default function ProductDetail() {
               {product.name}
             </h1>
             {product.subtitle ? (
-              <p className="text-[1.31rem] text-apple-textSecondary font-normal mt-2 leading-[1.19] tracking-[0.231px]" data-testid="product-subtitle">
+              <p
+                className="text-[1.31rem] text-apple-textSecondary font-normal mt-2 leading-[1.19] tracking-[0.231px]"
+                data-testid="product-subtitle"
+              >
                 {product.subtitle}
               </p>
             ) : null}
 
             <div className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-2">
-              <p className="text-[2rem] font-display font-semibold text-ink-950 tabular-nums leading-tight" data-testid="product-price">
-                ${(product.priceCents / 100).toFixed(2)}
+              <p
+                className="text-[2rem] font-display font-semibold text-ink-950 tabular-nums leading-tight"
+                data-testid="product-price"
+              >
+                {formatPrice(product.priceCents)}
               </p>
               {product.sku ? (
-                <p className="text-caption text-apple-textTertiary font-mono tracking-[-0.224px]" data-testid="product-sku">
+                <p
+                  className="text-caption text-apple-textTertiary font-mono tracking-[-0.224px]"
+                  data-testid="product-sku"
+                >
                   SKU {product.sku}
                 </p>
               ) : null}
@@ -136,7 +140,7 @@ export default function ProductDetail() {
                 className="inline-flex items-center gap-2 rounded-full bg-apple-gray text-ink-950 px-4 py-2 text-caption font-medium"
                 data-testid="product-eco-badge"
               >
-                <EcoDots score={product.ecoScore} />
+                <EcoDots score={product.ecoScore} size="md" />
                 <span data-testid="product-eco-label">Green Index</span>
                 <span data-testid="product-eco-score" className="tabular-nums">
                   {product.ecoScore}/5
@@ -144,21 +148,36 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <p className="text-apple-textSecondary mt-6 leading-[1.47] tracking-[-0.0234em] text-pretty" data-testid="product-description">
+            <p
+              className="text-apple-textSecondary mt-6 leading-[1.47] tracking-[-0.0234em] text-pretty"
+              data-testid="product-description"
+            >
               {product.description}
             </p>
-            <p className="text-caption text-apple-textTertiary mt-2 tracking-[-0.224px]" data-testid="product-stock">
+            <p
+              className="text-caption text-apple-textTertiary mt-2 tracking-[-0.224px]"
+              data-testid="product-stock"
+            >
               {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
             </p>
 
             {highlights.length > 0 && (
-              <section className="mt-8 rounded-lg bg-white p-5 shadow-apple-card" aria-labelledby="product-highlights-heading">
-                <h2 id="product-highlights-heading" className="font-display text-micro font-semibold uppercase tracking-wide text-apple-textTertiary">
+              <section
+                className="mt-8 rounded-lg bg-white p-5 shadow-apple-card"
+                aria-labelledby="product-highlights-heading"
+              >
+                <h2
+                  id="product-highlights-heading"
+                  className="font-display text-micro font-semibold uppercase tracking-wide text-apple-textTertiary"
+                >
                   At a glance
                 </h2>
                 <ul className="mt-3 space-y-2" data-testid="product-highlights">
                   {highlights.map((h) => (
-                    <li key={h} className="flex gap-2 text-ink-950 text-caption leading-[1.29] tracking-[-0.224px]">
+                    <li
+                      key={h}
+                      className="flex gap-2 text-ink-950 text-caption leading-[1.29] tracking-[-0.224px]"
+                    >
                       <span className="text-apple-nearBlack font-bold shrink-0" aria-hidden>
                         ✓
                       </span>
@@ -170,15 +189,25 @@ export default function ProductDetail() {
             )}
 
             {specs.length > 0 && (
-              <section className="mt-6 rounded-lg bg-white p-5 shadow-apple-card" aria-labelledby="product-specs-heading">
-                <h2 id="product-specs-heading" className="font-display text-micro font-semibold uppercase tracking-wide text-apple-textTertiary">
+              <section
+                className="mt-6 rounded-lg bg-white p-5 shadow-apple-card"
+                aria-labelledby="product-specs-heading"
+              >
+                <h2
+                  id="product-specs-heading"
+                  className="font-display text-micro font-semibold uppercase tracking-wide text-apple-textTertiary"
+                >
                   Specifications
                 </h2>
                 <dl className="mt-3 grid gap-3 sm:grid-cols-2" data-testid="product-specs">
                   {specs.map((row) => (
                     <div key={row.label} className="rounded-lg bg-apple-gray px-3 py-2">
-                      <dt className="text-micro font-semibold uppercase tracking-wide text-apple-textTertiary">{row.label}</dt>
-                      <dd className="text-caption text-ink-950 mt-0.5 leading-snug tracking-[-0.224px]">{row.value}</dd>
+                      <dt className="text-micro font-semibold uppercase tracking-wide text-apple-textTertiary">
+                        {row.label}
+                      </dt>
+                      <dd className="text-caption text-ink-950 mt-0.5 leading-snug tracking-[-0.224px]">
+                        {row.value}
+                      </dd>
                     </div>
                   ))}
                 </dl>
@@ -195,7 +224,10 @@ export default function ProductDetail() {
               {addMutation.isPending ? "Adding…" : "Add to cart"}
             </button>
             {addMutation.isSuccess && (
-              <p className="text-ink-950 text-caption mt-3 tracking-[-0.224px]" data-testid="product-add-success">
+              <p
+                className="text-ink-950 text-caption mt-3 tracking-[-0.224px]"
+                data-testid="product-add-success"
+              >
                 Added to cart.
               </p>
             )}

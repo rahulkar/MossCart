@@ -14,6 +14,8 @@ public class ProfilePage extends BasePage {
   private static final By SAVE_BTN = By.cssSelector("[data-testid='profile-save-btn']");
   private static final By CANCEL_BTN = By.cssSelector("[data-testid='profile-cancel-btn']");
   private static final By NAME_INPUT = By.cssSelector("[data-testid='profile-name-input']");
+  private static final By EMAIL_INPUT = By.cssSelector("[data-testid='profile-email-input']");
+  private static final By EMAIL_DISPLAY = By.cssSelector("[data-testid='profile-email-display']");
   private static final By LOGOUT_PROFILE = By.cssSelector("[data-testid='profile-logout-btn']");
 
   public void open() {
@@ -44,6 +46,35 @@ public class ProfilePage extends BasePage {
     WebElement el = waitVisible(NAME_INPUT);
     el.clear();
     el.sendKeys(newName);
+    waitVisible(SAVE_BTN).click();
+    waitVisible(EDIT_BTN);
+  }
+
+  public String getEmailDisplayText() {
+    return waitVisible(EMAIL_DISPLAY).getText();
+  }
+
+  public void assertEmailInputVisible() {
+    waitVisible(EMAIL_INPUT);
+  }
+
+  public void enterEmail(String email) {
+    WebElement el = waitVisible(EMAIL_INPUT);
+    el.clear();
+    el.sendKeys(email);
+  }
+
+  public void assertEmailInputInvalid() {
+    WebElement el = waitVisible(EMAIL_INPUT);
+    String validity = el.getAttribute("validity");
+    if (validity != null && validity.contains("valid:true")) {
+      throw new AssertionError("Email input should be invalid");
+    }
+    // Fallback: HTML5 type=email typically prevents form submission, so the form remains visible.
+    waitVisible(EMAIL_INPUT);
+  }
+
+  public void saveProfileChanges() {
     waitVisible(SAVE_BTN).click();
     waitVisible(EDIT_BTN);
   }

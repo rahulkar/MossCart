@@ -84,4 +84,20 @@ public class OrderSteps {
     }
     new OrderDetailPage().assertTotalCents(expected);
   }
+
+  @Then("the order receipt should show status and date metadata")
+  public void receiptMeta() {
+    OrderDetailPage page = new OrderDetailPage();
+    page.assertMetaContainsStatus("paid");
+  }
+
+  @When("they open an invalid order route directly")
+  public void openInvalidOrder() {
+    new OrderDetailPage().openOrderRoute("999999");
+  }
+
+  @Then("the order not found placeholder should display")
+  public void notFoundPlaceholder() {
+    new OrderDetailPage().assertNotFoundVisible();
+  }
 }

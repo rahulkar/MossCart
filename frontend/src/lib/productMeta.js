@@ -8,7 +8,13 @@ export function productHighlights(raw) {
 export function productSpecs(raw) {
   if (!Array.isArray(raw)) return [];
   return raw
-    .filter((row) => row && typeof row === "object" && typeof row.label === "string" && typeof row.value === "string")
+    .filter(
+      (row) =>
+        row &&
+        typeof row === "object" &&
+        typeof row.label === "string" &&
+        typeof row.value === "string"
+    )
     .map((row) => ({ label: row.label.trim(), value: row.value.trim() }))
     .filter((row) => row.label && row.value);
 }

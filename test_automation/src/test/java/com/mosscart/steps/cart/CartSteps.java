@@ -130,6 +130,29 @@ public class CartSteps {
     assertThat(cart.quantityDisplayedForFirstLine()).isEqualTo(qty);
   }
 
+  @Then("the first cart line subtotal should be visible")
+  public void firstLineSubtotalVisible() {
+    CartPage cart = new CartPage();
+    cart.open();
+    cart.assertFirstLineSubtotalVisible();
+  }
+
+  @Then("the first cart line subtotal in cents should be {int}")
+  public void firstLineSubtotalCents(int cents) {
+    CartPage cart = new CartPage();
+    cart.open();
+    assertThat(cart.parseFirstLineSubtotalCents()).isEqualTo(cents);
+  }
+
+  @Then("the cart total should equal the sum of visible line subtotals")
+  public void totalEqualsSumSubtotals() {
+    CartPage cart = new CartPage();
+    cart.open();
+    int total = cart.parseTotalCentsFromSummary();
+    int sum = cart.sumLineSubtotalsCents();
+    assertThat(total).isEqualTo(sum);
+  }
+
   @Then("the cart should include these lines:")
   public void cartIncludesLines(DataTable table) {
     CartPage cart = new CartPage();

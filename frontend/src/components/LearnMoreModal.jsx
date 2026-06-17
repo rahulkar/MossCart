@@ -26,12 +26,16 @@ export default function LearnMoreModal({ open, onClose }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4" data-testid="home-learn-more-modal">
-      <div
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
+      data-testid="home-learn-more-modal"
+    >
+      <button
+        type="button"
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         aria-hidden
         onClick={onClose}
-        role="presentation"
+        tabIndex={-1}
       />
       <div
         ref={panelRef}
@@ -40,10 +44,12 @@ export default function LearnMoreModal({ open, onClose }) {
         aria-labelledby={titleId}
         tabIndex={-1}
         className="relative w-full sm:max-w-lg max-h-[85dvh] overflow-y-auto rounded-t-2xl sm:rounded-2xl bg-apple-gray text-ink-950 shadow-apple-card outline-none"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 flex items-center justify-between gap-4 border-b border-black/5 bg-apple-gray/95 px-5 py-4 backdrop-blur-sm">
-          <h2 id={titleId} className="font-display text-tile-heading font-semibold text-ink-950 leading-[1.14] pr-2">
+          <h2
+            id={titleId}
+            className="font-display text-tile-heading font-semibold text-ink-950 leading-[1.14] pr-2"
+          >
             About MossCart
           </h2>
           <button
@@ -57,17 +63,19 @@ export default function LearnMoreModal({ open, onClose }) {
         </div>
         <div className="px-5 py-5 space-y-4 text-body text-apple-textSecondary leading-[1.47] tracking-[-0.0234em]">
           <p>
-            MossCart is a demo storefront built around freshwater planted tanks: live moss, aquascaping stone, and
-            maintenance supplies in one catalog.
+            MossCart is a demo storefront built around freshwater planted tanks: live moss,
+            aquascaping stone, and maintenance supplies in one catalog.
           </p>
           <p>
-            <strong className="text-ink-950 font-semibold">Green Index</strong> is a simple 1–5 score shown on each
-            product so you can compare listings when you care about sourcing and environmental impact. It is
-            merchandising data for this demo, not a third-party certification.
+            <strong className="text-ink-950 font-semibold">Green Index</strong> is a simple 1–5
+            score shown on each product so you can compare listings when you care about sourcing and
+            environmental impact. It is merchandising data for this demo, not a third-party
+            certification.
           </p>
           <p>
-            Checkout uses a <strong className="text-ink-950 font-semibold">mock payment</strong> only — no real cards
-            are charged. Use it to practice cart → shipping → confirmation end to end.
+            Checkout uses a <strong className="text-ink-950 font-semibold">mock payment</strong>{" "}
+            only — no real cards are charged. Use it to practice cart → shipping → confirmation end
+            to end.
           </p>
           <div className="pt-2 flex flex-wrap gap-3">
             <Link

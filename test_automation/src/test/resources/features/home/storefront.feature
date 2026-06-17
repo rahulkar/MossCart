@@ -16,6 +16,15 @@ Feature: Storefront home experience
   Scenario: Value props explain why the demo shop exists
     Given the shopper navigates to the home page
     Then the value proposition cards should be listed
+    And the individual value proposition cards should be visible
+
+  Scenario: Hero subtitle expands the landing story
+    Given the shopper navigates to the home page
+    Then the storefront hero subtitle should be visible
+
+  Scenario: Footer renders on the landing page
+    Given the shopper navigates to the home page
+    Then the site footer should be visible
 
   Scenario: Featured rail showcases inventory snapshots
     Given the shopper navigates to the home page

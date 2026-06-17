@@ -15,7 +15,7 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: file:/app/data/app.db
-      JWT_SECRET: ${JWT_SECRET:-docker-dev-change-me}
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-change-me-please-use-a-longer-secret}
       NODE_ENV: production
       # Refresh demo catalog when seed data changes (clears orders/cart; keeps users)
       RESEED_CATALOG: "true"
@@ -96,7 +96,7 @@ services:
       # rw: entrypoint may run `git init` if the host folder has no .git (file:// SCM requires a repo)
       - .:/workspace/mosscart
     environment:
-      JWT_SECRET: demo-jenkins-jwt-not-secret
+      JWT_SECRET: demo-jenkins-jwt-secret-must-be-at-least-32-characters
       # Pipelines target this Compose project (must match `docker compose ls` Name — same as top-level `name:` unless overridden with -p)
       MOSSCART_DOCKER_PROJECT: ${MOSSCART_DOCKER_PROJECT:-mosscart}
     restart: unless-stopped

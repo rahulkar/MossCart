@@ -9,6 +9,11 @@ function readGapPx(el) {
   return Number.isFinite(n) ? n : 24;
 }
 
+function getReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 /**
  * @param {{
  *   products: Array<Record<string, unknown> & { id: string }>;
@@ -20,10 +25,13 @@ export default function FeaturedCarousel({ products, isLoading }) {
   const [active, setActive] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(getReducedMotion);
 
   useEffect(() => {
-    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handler = (e) => setReducedMotion(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
 
   const syncScroll = useCallback(() => {
@@ -122,7 +130,7 @@ export default function FeaturedCarousel({ products, isLoading }) {
         behavior: reducedMotion ? "auto" : behavior,
       });
     },
-    [reducedMotion],
+    [reducedMotion]
   );
 
   useEffect(() => {

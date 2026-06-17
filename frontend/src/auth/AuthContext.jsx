@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(getToken()));
 
   const refresh = useCallback(async () => {
     if (!getToken()) {
@@ -25,7 +25,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    refresh();
+    if (getToken()) {
+      refresh();
+    }
   }, [refresh]);
 
   const login = useCallback(async (email, password) => {

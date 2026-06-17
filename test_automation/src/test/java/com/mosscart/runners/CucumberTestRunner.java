@@ -25,7 +25,8 @@ import org.junit.platform.suite.api.Suite;
             + "com.mosscart.steps.navigation,"
             + "com.mosscart.steps.sustainability,"
             + "com.mosscart.steps.orders,"
-            + "com.mosscart.steps.journeys")
+            + "com.mosscart.steps.journeys,"
+            + "com.mosscart.steps.api")
 @ConfigurationParameter(
     key = PLUGIN_PROPERTY_NAME,
     value =

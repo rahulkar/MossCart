@@ -101,18 +101,28 @@ public class ProductsPage extends BasePage {
 
   /**
    * Asserts merchandising copy under {@code data-testid^='product-card-eco-'} matches the catalog filter.
+   * Iterates all visible cards and verifies every card exposes the expected Green Index row.
    * Kept in sync with DESIGN.md-driven UI: label must stay {@code Green index: N/5} (see ProductCard.jsx).
    */
-  public void assertEcoScoreOnFirstCard(String minScore) {
+  public void assertEcoScoresMatch(String minScore) {
     waitVisible(PRODUCTS_TITLE);
     List<WebElement> cards = driver.findElements(PRODUCT_CARD);
     if (cards.isEmpty()) throw new AssertionError("No product cards");
-    String id = cards.get(0).getAttribute("data-testid").replace("product-card-", "");
-    WebElement eco = waitVisible(By.cssSelector("[data-testid='product-card-eco-" + id + "']"));
-    String text = eco.getText().replace('\n', ' ').trim();
-    if ("5".equals(minScore)) {
-      if (!text.toLowerCase().contains("green index: 5/5")) {
-        throw new AssertionError("Expected first card to show Green index 5/5, was: " + text);
+
+    boolean requireFive = "5".equals(minScore);
+    for (WebElement card : cards) {
+      String testId = card.getAttribute("data-testid");
+      if (testId == null || !testId.startsWith("product-card-")) continue;
+      String id = testId.replace("product-card-", "");
+      WebElement eco = waitVisible(By.cssSelector("[data-testid='product-card-eco-" + id + "']"));
+      String text = eco.getText().replace('\n', ' ').trim().toLowerCase();
+      if (!text.matches(".*green index: \\d/5.*")) {
+        throw new AssertionError(
+            "Expected card " + id + " to show Green index N/5, was: " + text);
+      }
+      if (requireFive && !text.contains("green index: 5/5")) {
+        throw new AssertionError(
+            "Expected card " + id + " to show Green index 5/5, was: " + text);
       }
     }
   }

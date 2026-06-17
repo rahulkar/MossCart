@@ -24,3 +24,11 @@ Feature: Stock states and merchandising media
   Scenario: Supplies category includes image-pending SKU
     When they filter the catalog by category "Supplies"
     Then at least one product card should appear in the grid
+
+  Scenario: In-stock PDP shows price, stock badge, description, subtitle, and back link
+    When they open the first product after searching for "All-in-One Aquarium"
+    Then the product price should be visible
+    And the product stock badge should be visible
+    And the product description should be visible
+    And the product subtitle should be visible
+    And the product back link should be visible

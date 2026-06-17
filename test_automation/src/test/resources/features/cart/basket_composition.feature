@@ -48,3 +48,7 @@ Feature: Basket composition for signed-in shoppers
       | product_contains | quantity |
       | Java Moss        | 1        |
       | Christmas        | 1        |
+
+  Scenario: Cart line subtotals are shown for each line
+    When they add the product from search "Java Moss Portion" to the cart from the PDP
+    Then the first cart line subtotal should be visible
