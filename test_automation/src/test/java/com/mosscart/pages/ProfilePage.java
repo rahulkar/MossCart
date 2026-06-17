@@ -66,12 +66,12 @@ public class ProfilePage extends BasePage {
 
   public void assertEmailInputInvalid() {
     WebElement el = waitVisible(EMAIL_INPUT);
-    String validity = el.getAttribute("validity");
-    if (validity != null && validity.contains("valid:true")) {
+    Object valid =
+        ((org.openqa.selenium.JavascriptExecutor) driver)
+            .executeScript("return arguments[0].validity.valid;", el);
+    if (Boolean.TRUE.equals(valid)) {
       throw new AssertionError("Email input should be invalid");
     }
-    // Fallback: HTML5 type=email typically prevents form submission, so the form remains visible.
-    waitVisible(EMAIL_INPUT);
   }
 
   public void saveProfileChanges() {
