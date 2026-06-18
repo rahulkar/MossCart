@@ -10,7 +10,7 @@ const router = Router();
 
 router.use(requireAuth);
 
-const safeUserSelect = { id: true, email: true, name: true, createdAt: true };
+const safeUserSelect = { id: true, email: true, name: true, role: true, createdAt: true };
 
 router.get(
   "/me",

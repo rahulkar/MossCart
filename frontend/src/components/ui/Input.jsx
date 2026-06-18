@@ -11,6 +11,7 @@ const field =
  *   required?: boolean;
  *   minLength?: number;
  *   autoComplete?: string;
+ *   list?: string;
  *   "data-testid"?: string;
  * }} props
  */
@@ -23,6 +24,7 @@ export default function Input({
   required = false,
   minLength,
   autoComplete,
+  list,
   "data-testid": testId,
 }) {
   return (
@@ -41,6 +43,7 @@ export default function Input({
         required={required}
         minLength={minLength}
         autoComplete={autoComplete}
+        list={list}
         className={field}
         data-testid={testId}
       />

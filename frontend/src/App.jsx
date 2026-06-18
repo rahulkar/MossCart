@@ -10,6 +10,8 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Profile from "./pages/Profile.jsx";
 import OrderDetail from "./pages/OrderDetail.jsx";
+import OrderConfirmation from "./pages/OrderConfirmation.jsx";
+import AdminProducts from "./pages/AdminProducts.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
+          <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

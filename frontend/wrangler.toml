@@ -1,0 +1,8 @@
+name = "mosscart-pages"
+compatibility_date = "2025-03-27"
+
+[build]
+command = "npm run build"
+
+# Cloudflare Pages will serve the Vite production build from this directory.
+pages_build_output_dir = "dist"

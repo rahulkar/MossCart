@@ -68,3 +68,47 @@ describe("GET /api/auth/me", () => {
     await api().get("/api/auth/me").set("Authorization", "Bearer invalid").expect(401);
   });
 });
+
+describe("POST /api/auth/change-password", () => {
+  it("changes password with valid current password", async () => {
+    const { user, token, password } = await createUser({ email: "changepw@example.com" });
+    const res = await api()
+      .post("/api/auth/change-password")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ currentPassword: password, newPassword: "newpassword123" })
+      .expect(200);
+    expect(res.body.ok).toBe(true);
+
+    await api()
+      .post("/api/auth/login")
+      .send({ email: user.email, password: "newpassword123" })
+      .expect(200);
+  });
+
+  it("rejects wrong current password", async () => {
+    const { token } = await createUser({ email: "badpw@example.com" });
+    const res = await api()
+      .post("/api/auth/change-password")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ currentPassword: "wrong", newPassword: "newpassword123" })
+      .expect(401);
+    expect(res.body.error.code).toBe("invalid_credentials");
+  });
+
+  it("requires authentication", async () => {
+    await api()
+      .post("/api/auth/change-password")
+      .send({ currentPassword: "old", newPassword: "newpassword123" })
+      .expect(401);
+  });
+
+  it("validates new password length", async () => {
+    const { token, password } = await createUser({ email: "shortpw@example.com" });
+    const res = await api()
+      .post("/api/auth/change-password")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ currentPassword: password, newPassword: "123" })
+      .expect(400);
+    expect(res.body.error.code).toBe("validation_error");
+  });
+});

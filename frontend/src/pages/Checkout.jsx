@@ -45,7 +45,7 @@ export default function Checkout() {
         return;
       }
       setDeclinedNotice("");
-      navigate("/profile", { replace: true });
+      navigate(`/order-confirmation/${order.id}`, { replace: true });
     },
   });
 

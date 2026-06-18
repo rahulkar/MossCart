@@ -3,13 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client.js";
 import ProductCard from "../components/ProductCard.jsx";
 
-function buildQuery(q, category, ecoMin) {
+const PAGE_SIZE = 12;
+
+function buildQuery(q, category, ecoMin, page, pageSize) {
   const params = new URLSearchParams();
   if (q.trim()) params.set("q", q.trim());
   if (category) params.set("category", category);
   if (ecoMin) params.set("ecoMin", ecoMin);
-  const s = params.toString();
-  return s ? `?${s}` : "";
+  params.set("page", String(page));
+  params.set("pageSize", String(pageSize));
+  return `?${params.toString()}`;
 }
 
 const filterControl =
@@ -19,16 +22,25 @@ export default function Products() {
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("");
   const [ecoMin, setEcoMin] = useState("");
+  const [page, setPage] = useState(1);
 
   const { data: categories } = useQuery({
     queryKey: ["product-categories"],
     queryFn: () => api("/api/products/categories"),
   });
 
-  const { data: products, isLoading } = useQuery({
-    queryKey: ["products", q, category, ecoMin],
-    queryFn: () => api(`/api/products${buildQuery(q, category, ecoMin)}`),
+  const { data, isLoading } = useQuery({
+    queryKey: ["products", q, category, ecoMin, page],
+    queryFn: () => api(`/api/products${buildQuery(q, category, ecoMin, page, PAGE_SIZE)}`),
   });
+
+  const products = data?.products ?? [];
+  const totalPages = data?.totalPages ?? 1;
+
+  const resetPage = (setter) => (value) => {
+    setter(value);
+    setPage(1);
+  };
 
   return (
     <div className="bg-apple-gray min-h-full w-full">
@@ -56,7 +68,7 @@ export default function Products() {
               type="search"
               placeholder="Name, SKU, or description…"
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => resetPage(setQ)(e.target.value)}
               className={filterControl}
               data-testid="products-search"
             />
@@ -71,7 +83,7 @@ export default function Products() {
             <select
               id="product-category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => resetPage(setCategory)(e.target.value)}
               className={`${filterControl} sm:w-48`}
               data-testid="products-category-filter"
             >
@@ -93,7 +105,7 @@ export default function Products() {
             <select
               id="product-eco"
               value={ecoMin}
-              onChange={(e) => setEcoMin(e.target.value)}
+              onChange={(e) => resetPage(setEcoMin)(e.target.value)}
               className={`${filterControl} sm:w-44`}
               data-testid="products-eco-filter"
             >
@@ -112,7 +124,7 @@ export default function Products() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-7 xl:gap-8"
           data-testid="products-grid"
         >
-          {products?.map((p) => (
+          {products.map((p) => (
             <li key={p.id} className="min-h-0">
               <ProductCard
                 product={p}
@@ -124,10 +136,39 @@ export default function Products() {
             </li>
           ))}
         </ul>
-        {!isLoading && products?.length === 0 && (
+        {!isLoading && products.length === 0 && (
           <p className="text-apple-textTertiary text-caption" data-testid="products-empty">
             No products match your filters.
           </p>
+        )}
+        {totalPages > 1 && (
+          <nav
+            className="mt-10 flex items-center justify-center gap-3"
+            aria-label="Product pagination"
+            data-testid="products-pagination"
+          >
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              className="rounded-lg bg-white px-3 py-2 text-caption font-medium text-ink-950 shadow-apple-card disabled:opacity-50"
+              data-testid="products-prev-page"
+            >
+              Previous
+            </button>
+            <span className="text-caption text-apple-textSecondary" data-testid="products-page-info">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              className="rounded-lg bg-white px-3 py-2 text-caption font-medium text-ink-950 shadow-apple-card disabled:opacity-50"
+              data-testid="products-next-page"
+            >
+              Next
+            </button>
+          </nav>
         )}
       </div>
     </div>

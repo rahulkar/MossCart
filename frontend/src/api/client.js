@@ -9,11 +9,14 @@ export function setToken(token) {
   else localStorage.removeItem(TOKEN_KEY);
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+
 export async function api(path, options = {}) {
+  const url = `${API_BASE}${path}`;
   const headers = { "Content-Type": "application/json", ...options.headers };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetch(path, { ...options, headers });
+  const res = await fetch(url, { ...options, headers });
   const text = await res.text();
   let data = null;
   if (text) {

@@ -2,6 +2,16 @@
 
 **MossCart** is a **full-stack e-commerce demo** and **UI regression / E2E testing** reference monorepo: **React + Vite** storefront, **Express + Prisma + SQLite** API (JWT auth, cart, mock checkout, orders, profile, **category + eco filters**, **order receipts**), and **`test_automation/`** with **Maven**, **Cucumber (BDD)**, **Selenium 4**, and **Page Object Model**. **Docker Compose** runs the stack, **Selenium**, **Nginx** (SPA + `/api` proxy), and a **pre-configured demo Jenkins** on port **8082** so pipelines can execute UI tests against the host Docker daemon.
 
+## Cloudflare-native deployment (experimental)
+
+A full Cloudflare-native port of the backend is provided in [`workers/`](workers/):
+
+- **Worker:** Hono + Cloudflare D1 (SQLite-compatible serverless DB) + Web Crypto auth
+- **Frontend:** Cloudflare Pages
+- **CI/CD:** `.github/workflows/deploy.yml` deploys both on pushes to `main`
+
+See [`workers/README.md`](workers/README.md) for local dev, first deploy, and required secrets.
+
 ## Overview
 
 Use MossCart to learn or demonstrate **end-to-end testing**, **Dockerized dev stacks**, and **pipeline-driven** UI checks. The storefront is a **single-page app (SPA)** with **`data-testid`** hooks for stable selectors; the API exposes **REST** routes for catalog, cart, checkout, orders, and profile. **Smoke** and domain **tags** (`@smoke`, `@module_catalog`, etc.) let you slice **Cucumber** runs locally or in **Jenkins**. **Allure** and published reports support test triage after **`mvn test`**.
@@ -37,9 +47,11 @@ This starts by default:
 | Service | Port | Purpose |
 |--------|------|---------|
 | **web** | [http://localhost:8080](http://localhost:8080) | Storefront (Nginx serves the SPA; `/api/*` is proxied to the API) |
-| **api** | [http://localhost:3000](http://localhost:3000) | Express API directly (same routes as `/api/*` on the storefront) |
+| **api** | [http://localhost:3001](http://localhost:3001) | Express API directly (host port bumped by [`docker-compose.override.yml`](docker-compose.override.yml) to avoid common local conflicts) |
 | **selenium** | (internal) | Chrome for UI tests — containers use `http://selenium:4444` |
 | **jenkins-demo** | [http://localhost:8082](http://localhost:8082) | Demo Jenkins — login **`demo` / `demo`** (see [Pre-baked demo Jenkins](#pre-baked-demo-jenkins)) |
+
+The included [`docker-compose.override.yml`](docker-compose.override.yml) also raises `RATE_LIMIT_MAX` / `AUTH_RATE_LIMIT_MAX` so the UI regression suite can run without tripping the demo rate limits.
 
 SQLite lives in the named volume `sqlite_data` (`DATABASE_URL=file:/app/data/app.db` in the API container).
 
@@ -204,7 +216,7 @@ The optional **profile `ci`** service **jenkins** on [http://localhost:8081](htt
 | [`docker/`](docker/) | API + web Dockerfiles, Nginx config, [`docker/jenkins/`](docker/jenkins/) — [`Dockerfile`](docker/jenkins/Dockerfile), [`Dockerfile.demo`](docker/jenkins/Dockerfile.demo), [`jenkins-demo-entrypoint.sh`](docker/jenkins/jenkins-demo-entrypoint.sh), [`casc-demo.yaml`](docker/jenkins/casc-demo.yaml), [`init.groovy.d/`](docker/jenkins/init.groovy.d/), [`plugins.txt`](docker/jenkins/plugins.txt), [`plugins-demo-extra.txt`](docker/jenkins/plugins-demo-extra.txt) |
 | [`jenkins/pipelines/`](jenkins/pipelines/) | Extra `Jenkinsfile.smoke` for a second job |
 | [`test_automation/`](test_automation/) | Maven, Cucumber features, POM pages, hooks |
-| [`docker-compose.yml`](docker-compose.yml) | Default: **`api` :3000**, **`web` :8080**, **`selenium`**, **`jenkins-demo` :8082**; profile **`test`**: `test-runner`; profile **`ci`**: `jenkins` :8081 |
+| [`docker-compose.yml`](docker-compose.yml) | Default: **`api` :3000** (host port `:3001` via override), **`web` :8080**, **`selenium`**, **`jenkins-demo` :8082**; profile **`test`**: `test-runner`; profile **`ci`**: `jenkins` :8081 |
 
 ## API summary
 

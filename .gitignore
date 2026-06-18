@@ -41,6 +41,7 @@ allure-report/
 # --- Environment (never commit secrets) ---
 .env
 .env.*
+.dev.vars
 !.env.example
 !**/.env.example
 

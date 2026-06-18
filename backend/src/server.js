@@ -30,18 +30,21 @@ app.use(helmet());
 app.use(express.json());
 app.use(authOptional);
 
+const rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX ?? "200", 10);
+const rateLimitWindowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? String(15 * 60 * 1000), 10);
 const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,
+  windowMs: rateLimitWindowMs,
+  max: Number.isFinite(rateLimitMax) ? rateLimitMax : 200,
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use(generalLimiter);
 
 if (config.NODE_ENV !== "test") {
+  const authRateLimitMax = parseInt(process.env.AUTH_RATE_LIMIT_MAX ?? "20", 10);
   const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 20,
+    windowMs: rateLimitWindowMs,
+    max: Number.isFinite(authRateLimitMax) ? authRateLimitMax : 20,
     standardHeaders: true,
     legacyHeaders: false,
     skipSuccessfulRequests: false,

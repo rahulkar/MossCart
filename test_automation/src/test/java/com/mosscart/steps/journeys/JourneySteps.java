@@ -40,6 +40,7 @@ public class JourneySteps {
   @Then("their profile timeline should include the closed order")
   public void timeline() {
     ProfilePage prof = new ProfilePage();
+    prof.open();
     prof.assertLoaded();
     prof.assertHasOrderRow();
   }

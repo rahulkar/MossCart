@@ -27,6 +27,11 @@ export default function Profile() {
     enabled: Boolean(user),
   });
 
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [pwMessage, setPwMessage] = useState("");
+
   const updateProfile = useMutation({
     mutationFn: (body) =>
       api("/api/users/me", {
@@ -38,6 +43,21 @@ export default function Profile() {
       qc.invalidateQueries({ queryKey: ["profile", "me"] });
       setEditing(false);
     },
+  });
+
+  const changePassword = useMutation({
+    mutationFn: (body) =>
+      api("/api/auth/change-password", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    onSuccess: () => {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPwMessage("Password changed successfully.");
+    },
+    onError: (err) => setPwMessage(err.message),
   });
 
   if (!user) {
@@ -143,6 +163,75 @@ export default function Profile() {
             </div>
           </form>
         )}
+
+        <section
+          className="mt-12 rounded-lg bg-white p-6 shadow-apple-card max-w-lg"
+          data-testid="profile-change-password"
+        >
+          <h2
+            className="font-display text-tile-heading font-semibold text-ink-950 mb-4 leading-[1.14]"
+            data-testid="profile-change-password-heading"
+          >
+            Change password
+          </h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setPwMessage("");
+              if (newPassword !== confirmPassword) {
+                setPwMessage("New passwords do not match.");
+                return;
+              }
+              changePassword.mutate({ currentPassword, newPassword });
+            }}
+            className="space-y-4"
+            data-testid="profile-change-password-form"
+          >
+            <Input
+              id="profile-current-password"
+              label="Current password"
+              type="password"
+              value={currentPassword}
+              onChange={setCurrentPassword}
+              required
+              data-testid="profile-current-password-input"
+            />
+            <Input
+              id="profile-new-password"
+              label="New password"
+              type="password"
+              value={newPassword}
+              onChange={setNewPassword}
+              required
+              minLength={6}
+              data-testid="profile-new-password-input"
+            />
+            <Input
+              id="profile-confirm-password"
+              label="Confirm new password"
+              type="password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              required
+              data-testid="profile-confirm-password-input"
+            />
+            {pwMessage && (
+              <p
+                className={`text-caption ${pwMessage.includes("success") ? "text-green-700" : "text-red-600"}`}
+                data-testid="profile-change-password-message"
+              >
+                {pwMessage}
+              </p>
+            )}
+            <Button
+              type="submit"
+              disabled={changePassword.isPending}
+              data-testid="profile-change-password-btn"
+            >
+              {changePassword.isPending ? "Saving…" : "Change password"}
+            </Button>
+          </form>
+        </section>
 
         <section className="mt-12" data-testid="profile-orders">
           <h2

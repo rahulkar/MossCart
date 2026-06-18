@@ -1,4 +1,9 @@
 services:
   api:
-    ports:
+    ports: !override
       - "3001:3000"
+    environment:
+      RATE_LIMIT_MAX: "5000"
+      AUTH_RATE_LIMIT_MAX: "2000"
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@mosscart.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme}

@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../server.js";
 import { prisma } from "../db.js";
 import { products } from "../seed-data.js";
+import { hashPassword } from "../auth.js";
 
 export { app };
 
@@ -34,6 +35,24 @@ export async function createUser(overrides = {}) {
     token: res.body.token,
     password: payload.password,
   };
+}
+
+export async function createAdminUser(overrides = {}) {
+  const password = overrides.password || "adminpass123";
+  const user = await prisma.user.create({
+    data: {
+      name: "Admin User",
+      email: "admin@example.com",
+      passwordHash: await hashPassword(password),
+      role: "admin",
+      ...overrides,
+    },
+  });
+  const res = await request(app).post("/api/auth/login").send({
+    email: user.email,
+    password,
+  });
+  return { user, token: res.body.token, password };
 }
 
 export async function addToCart(token, productId, quantity = 1) {

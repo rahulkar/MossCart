@@ -2,13 +2,14 @@ package com.mosscart.pages;
 
 import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 public class ProductsPage extends BasePage {
 
   private static final By PRODUCTS_TITLE = By.cssSelector("[data-testid='products-title']");
-  private static final By PRODUCT_CARD = By.cssSelector("[data-testid^='product-card-']");
+  private static final By PRODUCT_CARD = By.cssSelector("a[data-testid^='product-card-']");
   private static final By CATEGORY_FILTER = By.cssSelector("[data-testid='products-category-filter']");
   private static final By ECO_FILTER = By.cssSelector("[data-testid='products-eco-filter']");
   private static final By SEARCH = By.cssSelector("[data-testid='products-search']");
@@ -87,11 +88,20 @@ public class ProductsPage extends BasePage {
     }
     wait.until(
         d -> {
-          List<WebElement> loaders = d.findElements(By.cssSelector("[data-testid='products-loading']"));
-          if (loaders.stream().anyMatch(WebElement::isDisplayed)) {
+          try {
+            List<WebElement> loaders =
+                d.findElements(By.cssSelector("[data-testid='products-loading']"));
+            for (WebElement loader : loaders) {
+              if (loader.isDisplayed()) {
+                return false;
+              }
+            }
+            return d.findElements(PRODUCT_CARD).size() >= min;
+          } catch (StaleElementReferenceException e) {
+            // The loading indicator was removed from the DOM between findElements()
+            // and isDisplayed(); treat this tick as still settling and retry.
             return false;
           }
-          return d.findElements(PRODUCT_CARD).size() >= min;
         });
   }
 

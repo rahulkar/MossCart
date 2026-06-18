@@ -44,8 +44,15 @@ public class ProfilePage extends BasePage {
 
   public void saveProfileWithName(String newName) {
     WebElement el = waitVisible(NAME_INPUT);
-    el.clear();
-    el.sendKeys(newName);
+    ((org.openqa.selenium.JavascriptExecutor) driver)
+        .executeScript(
+            "const el = arguments[0]; const val = arguments[1];"
+                + "const desc = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');"
+                + "desc.set.call(el, val);"
+                + "el.dispatchEvent(new Event('input', { bubbles: true }));"
+                + "el.dispatchEvent(new Event('change', { bubbles: true }));",
+            el,
+            newName);
     waitVisible(SAVE_BTN).click();
     waitVisible(EDIT_BTN);
   }
@@ -60,8 +67,15 @@ public class ProfilePage extends BasePage {
 
   public void enterEmail(String email) {
     WebElement el = waitVisible(EMAIL_INPUT);
-    el.clear();
-    el.sendKeys(email);
+    ((org.openqa.selenium.JavascriptExecutor) driver)
+        .executeScript(
+            "const el = arguments[0]; const val = arguments[1];"
+                + "const desc = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');"
+                + "desc.set.call(el, val);"
+                + "el.dispatchEvent(new Event('input', { bubbles: true }));"
+                + "el.dispatchEvent(new Event('change', { bubbles: true }));",
+            el,
+            email);
   }
 
   public void assertEmailInputInvalid() {

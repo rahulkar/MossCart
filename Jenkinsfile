@@ -28,7 +28,7 @@ pipeline {
           NW="\${P}_default"
           MVN_IMAGE='maven:3.9.9-eclipse-temurin-17'
           echo "=== MossCart CI: reuse stack; Maven tests via docker cp (no host bind mount) ==="
-          cd /workspace/mosscart
+          cd "${WS}"
           echo "Compose project network: \$NW"
           echo "Waiting for API via existing web container..."
           for i in \$(seq 1 60); do

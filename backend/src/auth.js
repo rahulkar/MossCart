@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { config } from "./config.js";
 
-export function signToken(userId) {
-  return jwt.sign({ sub: userId }, config.JWT_SECRET, { expiresIn: "7d" });
+export function signToken({ id, role }) {
+  return jwt.sign({ sub: id, role }, config.JWT_SECRET, { expiresIn: "7d" });
 }
 
 export function verifyToken(token) {
@@ -11,6 +11,16 @@ export function verifyToken(token) {
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
     return decoded.sub;
+  } catch {
+    return null;
+  }
+}
+
+export function getTokenRole(token) {
+  if (!token) return null;
+  try {
+    const decoded = jwt.verify(token, config.JWT_SECRET);
+    return decoded.role || null;
   } catch {
     return null;
   }

@@ -34,6 +34,7 @@ public class CheckoutSteps {
   @Then("the account profile should reflect the new order")
   public void profileOrder() {
     ProfilePage prof = new ProfilePage();
+    prof.open();
     prof.assertLoaded();
     prof.assertHasOrderRow();
   }

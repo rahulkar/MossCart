@@ -44,6 +44,11 @@ export default function Layout() {
             </NavLink>
             {user ? (
               <>
+                {user.role === "admin" && (
+                  <NavLink to="/admin/products" className={navClass} data-testid="nav-admin-products">
+                    Admin
+                  </NavLink>
+                )}
                 <NavLink to="/profile" className={navClass} data-testid="nav-profile">
                   Profile
                 </NavLink>

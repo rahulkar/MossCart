@@ -61,7 +61,10 @@ public class CheckoutPage extends BasePage {
       waitVisible(PAYMENT_FAILED);
       wait.until(ExpectedConditions.urlContains("/checkout"));
     } else {
-      wait.until(ExpectedConditions.urlContains("/profile"));
+      wait.until(ExpectedConditions.urlContains("/order-confirmation/"));
+      String url = driver.getCurrentUrl();
+      String id = url.replaceAll(".*order-confirmation/([^/]+).*", "$1");
+      ScenarioContext.setLastOrderId(id);
     }
   }
 

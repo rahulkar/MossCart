@@ -88,7 +88,7 @@ public class OrderSteps {
   @Then("the order receipt should show status and date metadata")
   public void receiptMeta() {
     OrderDetailPage page = new OrderDetailPage();
-    page.assertMetaContainsStatus("paid");
+    page.assertMetaContainsStatus("succeeded");
   }
 
   @When("they open an invalid order route directly")

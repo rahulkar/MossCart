@@ -13,7 +13,7 @@ export default function Home() {
   const { data: products, isLoading } = useQuery({
     queryKey: ["products", "featured"],
     queryFn: () => api("/api/products"),
-    select: (list) => list?.slice(0, FEATURED_LIMIT) ?? [],
+    select: (data) => data?.products?.slice(0, FEATURED_LIMIT) ?? [],
   });
 
   return (

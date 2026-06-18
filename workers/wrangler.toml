@@ -1,0 +1,16 @@
+name = "mosscart-worker"
+main = "src/index.ts"
+compatibility_date = "2025-03-27"
+compatibility_flags = ["nodejs_compat"]
+
+# Replace with your Cloudflare account ID before deploying.
+# Run: npx wrangler whoami
+account_id = "YOUR_ACCOUNT_ID"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mosscart-db"
+# Replace with the database_id from `wrangler d1 create mosscart-db` before deploying.
+database_id = "YOUR_DATABASE_ID"
+migrations_dir = "prisma/migrations"
+migrations_pattern = "prisma/migrations/*/migration.sql"

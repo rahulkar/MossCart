@@ -73,7 +73,8 @@ public final class MosscartApi {
   }
 
   private List<ProductRef> parseProductList(String json) {
-    JsonNode arr = readTree(json);
+    JsonNode root = readTree(json);
+    JsonNode arr = root.isArray() ? root : root.path("products");
     if (!arr.isArray()) {
       throw new ApiException(500, "Expected product array");
     }
